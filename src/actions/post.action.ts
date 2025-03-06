@@ -3,14 +3,20 @@
 import db from "@/lib/db";
 import { getDbUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
+import { CreatePostData } from "@/components/CreatePost";
 
-export async function createPost(description: string, image: string) {
+export async function createPost({
+  title,
+  description,
+  image,
+}: CreatePostData) {
   try {
     const userId = await getDbUserId();
     if (!userId) return;
 
     const post = await db.post.create({
       data: {
+        title,
         description,
         image,
         authorId: userId,
@@ -18,8 +24,6 @@ export async function createPost(description: string, image: string) {
     });
 
     revalidatePath("/");
-
-    return { success: true, post };
   } catch (error) {
     console.error("Failed to create post:", error);
     return { success: false, error: "Failed to create post" };
@@ -81,7 +85,7 @@ export async function getPosts() {
   }
 }
 
-export async function toggelLike(postId: string) {
+export async function toggleLike(postId: string) {
   try {
     const userId = await getDbUserId();
     if (!userId) return;
@@ -126,7 +130,7 @@ export async function toggelLike(postId: string) {
   }
 }
 
-export async function creatComment(postId: string, content: string) {
+export async function createComment(postId: string, content: string) {
   try {
     const userId = await getDbUserId();
     if (!userId) return;

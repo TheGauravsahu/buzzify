@@ -32,7 +32,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen">
             <Navbar />
-            <main className="py-8">
+            <main className="py-8 md:mx-16 mx-4">
               {children}
             </main>
           </div>
