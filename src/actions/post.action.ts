@@ -85,6 +85,67 @@ export async function getPosts() {
   }
 }
 
+export async function getUserPosts() {
+  const userId = await getDbUserId();
+  if (!userId) return;
+
+  try {
+    const posts = await db.post.findMany({
+      where: {
+        authorId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        // author -> post
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            username: true,
+          },
+        },
+        // comment -> post
+        comments: {
+          include: {
+            // author -> post -> comments
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                username: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        // likes -> post
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+
+    return posts;
+  } catch (error) {
+    console.log("Error in getPosts", error);
+    throw new Error("Failed to fetch posts");
+  }
+}
+
 export async function toggleLike(postId: string) {
   try {
     const userId = await getDbUserId();
