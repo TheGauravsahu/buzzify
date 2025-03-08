@@ -25,59 +25,58 @@ export async function createPost({
   return post;
 }
 
-export async function getPosts() {
-  try {
-    const posts = await db.post.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        // author -> post
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            username: true,
-          },
+export async function getPosts({ pageParam = 0 }) {
+  const pageSize = 3;
+
+  const posts = await db.post.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: pageSize,
+    skip: pageParam * pageSize,
+    include: {
+      // author -> post
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          username: true,
         },
-        // comment -> post
-        comments: {
-          include: {
-            // author -> post -> comments
-            author: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-                username: true,
-              },
+      },
+      // comment -> post
+      comments: {
+        include: {
+          // author -> post -> comments
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
             },
           },
-          orderBy: {
-            createdAt: "asc",
-          },
         },
-        // likes -> post
-        likes: {
-          select: {
-            userId: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-            comments: true,
-          },
+        orderBy: {
+          createdAt: "asc",
         },
       },
-    });
+      // likes -> post
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+    },
+  });
 
-    return posts;
-  } catch (error) {
-    console.log("Error in getPosts", error);
-    throw new Error("Failed to fetch posts");
-  }
+  return { posts, nextPage: posts.length === pageSize ? pageParam + 1 : null };
 }
 
 export async function getUserPosts() {

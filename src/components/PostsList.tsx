@@ -1,27 +1,28 @@
 "use client";
+
 import {
+  useInfiniteQuery,
   useMutation,
   useQueryClient,
-  useSuspenseQuery,
 } from "@tanstack/react-query";
 import { deletePost, getPosts } from "@/actions/post.action";
-import { Suspense } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
 export default function PostsList() {
-  const {
-    data: posts,
-    error,
-    isPending,
-  } = useSuspenseQuery({
+  const queryClient = useQueryClient();
+
+  const { data, fetchNextPage, hasNextPage, status } = useInfiniteQuery({
     queryKey: ["posts"],
-    queryFn: getPosts,
+    queryFn: ({ pageParam = 0 }) => getPosts({ pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
   });
 
+  console.log(data);
 
-
-  const queryClient = useQueryClient();
+  const posts = data?.pages.flatMap((page) => page.posts) || [];
 
   // delete post mutation
   const mutation = useMutation({
@@ -34,15 +35,21 @@ export default function PostsList() {
     },
   });
 
-  if (error) return <div>An error occured: {error.message}</div>;
+  if (status === "error") return <div>An error occured.</div>;
 
-  if (isPending) return <div>Loading...</div>;
+  if (status === "pending") return <div>Loading...</div>;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ul className="mt-4 grid grid-cols-1 gap-4">
+    <InfiniteScroll
+      dataLength={posts.length}
+      next={fetchNextPage}
+      hasMore={!!hasNextPage}
+      loader={<h4>Loading more posts.</h4>}
+      endMessage={<h3>All Posts Loaded!</h3>}
+    >
+      <div className="flex flex-wrap gap-4 min-h-screen">
         {posts.map((post) => (
-          <div key={post.id} className="flex justify-between items-center">
+          <div key={post.id} className="h-96 w-96 border p-4">
             <li>{post.title}</li>
             <Button
               disabled={mutation.isPending}
@@ -55,7 +62,7 @@ export default function PostsList() {
             </Button>
           </div>
         ))}
-      </ul>
-    </Suspense>
+      </div>
+    </InfiniteScroll>
   );
 }
