@@ -51,6 +51,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     mutationFn: createComment,
     onSuccess: () => {
       setNewComment("");
+      setShowComments(true);
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
@@ -200,7 +201,6 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
                   postId: post.id,
                   content: newComment,
                 });
-                setShowComments(true);
               }}
             >
               <SendIcon className="size-4" />

@@ -14,7 +14,7 @@ interface LoadingButtonProps {
     | "ghost"
     | null
     | undefined;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export default function LoadingButton({
