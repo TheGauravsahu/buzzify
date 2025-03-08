@@ -185,34 +185,34 @@ export async function toggleLike(postId: string) {
   }
 }
 
-export async function createComment(postId: string, content: string) {
-  try {
-    const userId = await getDbUserId();
-    if (!userId) return;
+export async function createComment({
+  postId,
+  content,
+}: {
+  postId: string;
+  content: string;
+}) {
+  const userId = await getDbUserId();
+  if (!userId) throw Error("Please Login to create a post.");
 
-    if (!content) throw new Error("Content is required.");
+  if (!content) throw new Error("Content is required.");
 
-    const post = await db.post.findUnique({
-      where: { id: postId },
-      select: { authorId: true },
-    });
+  const post = await db.post.findUnique({
+    where: { id: postId },
+    select: { authorId: true },
+  });
 
-    if (!post) throw new Error("Post not found");
+  if (!post) throw new Error("Post not found");
 
-    const comment = await db.comment.create({
-      data: {
-        content,
-        authorId: userId,
-        postId,
-      },
-    });
+  const comment = await db.comment.create({
+    data: {
+      content,
+      authorId: userId,
+      postId,
+    },
+  });
 
-    revalidatePath(`/`);
-    return { success: true, comment };
-  } catch (error) {
-    console.error("Failed to create comment:", error);
-    return { success: false, error: "Failed to create comment" };
-  }
+  return { success: true, comment };
 }
 
 export async function deletePost(postId: string) {

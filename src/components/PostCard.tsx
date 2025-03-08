@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Post, User, Comment } from "@prisma/client";
 import { Button } from "./ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePost } from "@/actions/post.action";
+import { createComment, deletePost } from "@/actions/post.action";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
@@ -35,6 +35,18 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
   const mutation = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // add a comment
+  const commentMutation = useMutation({
+    mutationFn: createComment,
+    onSuccess: () => {
+      setNewComment("");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
@@ -126,7 +138,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
                     </Link>
                     <div>
                       <Link href={`/profile/${comment.author.username}`}>
-                        <h2>{comment.author.name}</h2>
+                        <h2 className="text-sm text-foreground/80">{comment.author.name}</h2>
                       </Link>
                       <p>{comment.content}</p>
                     </div>
@@ -145,7 +157,16 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               className="min-h-[80px] resize-none"
             />
 
-            <Button size="sm" className="flex items-center gap-2">
+            <Button
+              size="sm"
+              disabled={commentMutation.isPending}
+              onClick={async () => {
+                await commentMutation.mutate({
+                  postId: post.id,
+                  content: newComment,
+                });
+              }}
+            >
               <>
                 <SendIcon className="size-4" />
                 Comment
