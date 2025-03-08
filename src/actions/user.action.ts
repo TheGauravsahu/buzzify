@@ -54,28 +54,30 @@ export async function getDbUserId() {
 }
 
 export async function getRandomUsers() {
-  try {
-    const userId = await getDbUserId();
-    if (!userId) return [];
+  const userId = await getDbUserId();
+  if (!userId) return [];
 
-    // get 3 random users except ourselves & users that we already follow
-    const randomUsers = await db.user.findMany({
-      where: {
-        AND: [
-          { NOT: { id: userId } },
-          {
-            NOT: {
-              // TODO: remove users that we already follow
-            },
+  // get 3 random users except ourselves & users that we already follow
+  const randomUsers = await db.user.findMany({
+    where: {
+      AND: [
+        { NOT: { id: userId } },
+        {
+          NOT: {
+            // TODO: remove users that we already follow
           },
-        ],
+        },
+      ],
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+        },
       },
-      take: 3,
-    });
+    },
+    take: 3,
+  });
 
-    return randomUsers;
-  } catch (error) {
-    console.log("Error fetching random users", error);
-    return [];
-  }
+  return randomUsers;
 }

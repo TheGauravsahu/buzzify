@@ -14,7 +14,7 @@ import { formatDate } from "@/lib/utils";
 import { Heart, MessageCircle, SendIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import LoadingButton from "./LoadingButton";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 type PostWithRelations = Post & {
   author: Pick<User, "id" | "name" | "image" | "username">;
@@ -194,18 +194,26 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               className="min-h-[80px] resize-none"
             />
 
-            <LoadingButton
-              isPending={commentMutation.isPending}
-              onClick={async () => {
-                await commentMutation.mutate({
-                  postId: post.id,
-                  content: newComment,
-                });
-              }}
-            >
-              <SendIcon className="size-4" />
-              Comment
-            </LoadingButton>
+            {user.isSignedIn ? (
+              <LoadingButton
+                isPending={commentMutation.isPending}
+                onClick={async () => {
+                  await commentMutation.mutate({
+                    postId: post.id,
+                    content: newComment,
+                  });
+                }}
+              >
+                <SendIcon className="size-4" />
+                Comment
+              </LoadingButton>
+            ) : (
+              <SignInButton mode="modal">
+                <Button variant="default" className="cursor-pointer">
+                  Sign In
+                </Button>
+              </SignInButton>
+            )}
           </div>
         </div>
       </CardFooter>

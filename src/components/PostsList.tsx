@@ -29,7 +29,7 @@ export default function PostsList() {
       loader={<PostsListSkeleton />}
       endMessage={<h3>You reached the end.</h3>}
     >
-      <div className="flex flex-col gap-8 overflow-hidden   w-full md:max-w-4xl mx-auto">
+      <div className="flex flex-1 flex-col gap-8 overflow-hidden w-full h-full   mx-auto">
         {posts.map((post) => (
           <PostCard post={post} />
         ))}
@@ -39,10 +39,10 @@ export default function PostsList() {
 }
 
 const PostsListSkeleton = () => {
-  const skeletonCount = [1, 2, 3, 4];
+  const skeletonCount = [1, 2];
 
   return (
-    <div className="flex flex-col gap-8 mt-8 justify-center md:justify-normal md:items-start items-center  w-full md:max-w-4xl mx-auto">
+    <div className="flex flex-col gap-8 mt-8 justify-center md:justify-normal md:items-start items-center  w-full  mx-auto">
       {skeletonCount.map((i) => (
         <Card key={i} className="w-full">
           {/* topbar */}
@@ -79,7 +79,7 @@ const PostsListSkeleton = () => {
             </div>
 
             <div className="w-full flex items-center gap-4">
-              <Skeleton className="h-28 w-full" />
+              <Skeleton className="h-12 w-full" />
               <Skeleton className="h-10 w-24" />
             </div>
           </CardFooter>
