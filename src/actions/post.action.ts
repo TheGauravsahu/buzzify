@@ -26,7 +26,7 @@ export async function createPost({
 }
 
 export async function getPosts({ pageParam = 0 }) {
-  const pageSize = 3;
+  const pageSize = 4;
 
   const posts = await db.post.findMany({
     orderBy: {

@@ -33,7 +33,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen">
             <Navbar />
-            <main className="py-8 md:mx-16 mx-4">{children}</main>
+            <main className="py-8 md:px-16 px-4">{children}</main>
             <Toaster />
           </div>
         </Providers>
