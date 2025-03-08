@@ -19,8 +19,11 @@ export default function PostsList() {
     queryFn: getPosts,
   });
 
+
+
   const queryClient = useQueryClient();
 
+  // delete post mutation
   const mutation = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
