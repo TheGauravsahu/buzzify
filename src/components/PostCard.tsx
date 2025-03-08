@@ -106,10 +106,10 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
       </CardHeader>
 
       <CardContent className="p-4 sm:p-6">
-        <div className="relative h-72 overflow-hidden">
+        <div className="relative h-72 overflow-hidden bg-secondary rounded-lg">
           <Image
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover hover:scale-105 cursor-pointer transition-transform duration-300"
             src={post.image as string}
             alt={post.title}
           />
@@ -133,6 +133,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
                   postId: post.id,
                 });
               }}
+              variant="outline"
               className={
                 post.likes.some((like) => like.user.clerkId === user.user?.id)
                   ? "text-red-500 hover:text-red-600"
@@ -140,7 +141,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               }
             >
               <Heart size={20} className="fill-current" />
-              <span className="text-white dark:text-black">
+              <span className="dark:text-white text-black">
                 {post._count.likes}
               </span>
             </Button>

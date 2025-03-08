@@ -17,12 +17,12 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="w-full flex flex-col md:flex-row gap-6">
+      <div className="w-full flex flex-col md:flex-row gap-6 items-start justify-start">
         <div className="flex-1">
           <PostsList />
         </div>
 
-        <div className="hidden md:block md:w-[25%]">
+        <div className="hidden md:block md:w-[35%] lg:w-[25%] ">
           <WhoToFollow />
         </div>
       </div>
