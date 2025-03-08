@@ -10,24 +10,19 @@ export async function createPost({
   description,
   image,
 }: CreatePostData) {
-  try {
-    const userId = await getDbUserId();
-    if (!userId) return;
+  const userId = await getDbUserId();
+  if (!userId) throw Error("Please Login to create a post.");
 
-    const post = await db.post.create({
-      data: {
-        title,
-        description,
-        image,
-        authorId: userId,
-      },
-    });
+  const post = await db.post.create({
+    data: {
+      title,
+      description,
+      image,
+      authorId: userId,
+    },
+  });
 
-    revalidatePath("/");
-  } catch (error) {
-    console.error("Failed to create post:", error);
-    return { success: false, error: "Failed to create post" };
-  }
+  return post;
 }
 
 export async function getPosts() {
@@ -222,26 +217,21 @@ export async function createComment(postId: string, content: string) {
 }
 
 export async function deletePost(postId: string) {
-  try {
-    const userId = await getDbUserId();
+  const userId = await getDbUserId();
 
-    const post = await db.post.findUnique({
-      where: { id: postId },
-      select: { authorId: true },
-    });
+  const post = await db.post.findUnique({
+    where: { id: postId },
+    select: { authorId: true },
+  });
 
-    if (!post) throw new Error("Post not found");
-    if (post.authorId !== userId)
-      throw new Error("Unauthorized - no delete permission");
+  if (!post) throw new Error("Post not found");
+  if (post.authorId !== userId)
+    throw new Error("Unauthorized - no delete permission");
 
-    await db.post.delete({
-      where: { id: postId },
-    });
+  await db.post.delete({
+    where: { id: postId },
+  });
 
-    revalidatePath("/");
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to delete post:", error);
-    return { success: false, error: "Failed to delete post" };
-  }
+  revalidatePath("/");
+  return { success: true };
 }

@@ -17,6 +17,8 @@ import { Textarea } from "./ui/textarea";
 import { createPost } from "@/actions/post.action";
 import LoadingButton from "./LoadingButton";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const createPostSchema = z.object({
   description: z.string().min(1, "Description is required."),
@@ -38,8 +40,20 @@ export default function CreatePostForm() {
 
   const router = useRouter();
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   async function onSubmit(data: CreatePostData) {
-    await createPost(data);
+    await mutation.mutate(data);
     router.push("/");
   }
 
