@@ -65,6 +65,11 @@ export async function getPosts({ pageParam = 0 }) {
       likes: {
         select: {
           userId: true,
+          user: {
+            select: {
+              clerkId: true,
+            },
+          },
         },
       },
       _count: {
@@ -140,7 +145,7 @@ export async function getUserPosts() {
   }
 }
 
-export async function toggleLike(postId: string) {
+export async function toggleLike({ postId }: { postId: string }) {
   try {
     const userId = await getDbUserId();
     if (!userId) return;

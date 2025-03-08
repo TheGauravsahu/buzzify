@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Post, User, Comment } from "@prisma/client";
 import { Button } from "./ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createComment, deletePost } from "@/actions/post.action";
+import { createComment, deletePost, toggleLike } from "@/actions/post.action";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
@@ -13,13 +13,15 @@ import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { formatDate } from "@/lib/utils";
 import { Heart, MessageCircle, SendIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
+import LoadingButton from "./LoadingButton";
+import { useUser } from "@clerk/nextjs";
 
 type PostWithRelations = Post & {
   author: Pick<User, "id" | "name" | "image" | "username">;
   comments: (Comment & {
     author: Pick<User, "id" | "name" | "image" | "username">;
   })[];
-  likes: { userId: string }[];
+  likes: { userId: string; user: Pick<User, "clerkId"> }[];
   _count: {
     likes: number;
     comments: number;
@@ -30,6 +32,8 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
+
+  const user = useUser();
 
   // delete post mutation
   const mutation = useMutation({
@@ -47,6 +51,17 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     mutationFn: createComment,
     onSuccess: () => {
       setNewComment("");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // toggle like
+  const toggleLikeMutation = useMutation({
+    mutationFn: toggleLike,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
@@ -75,16 +90,16 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
           </div>
 
           <div className="*:cursor-pointer">
-            <p className="text-xs">{formatDate(post.createdAt)}</p>
-            <Button
-              className="mt-2"
+            <p className="text-xs mb-2">{formatDate(post.createdAt)}</p>
+            <LoadingButton
               variant="secondary"
+              isPending={mutation.isPending}
               onClick={() => {
                 mutation.mutate(post.id);
               }}
             >
               Delete
-            </Button>
+            </LoadingButton>
           </div>
         </div>
       </CardHeader>
@@ -105,12 +120,28 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
         </div>
       </CardContent>
 
+      {/* POST INTERECTION */}
       <CardFooter>
         <div className="w-full flex flex-col gap-4">
           <div className="flex items-center w-full gap-4">
-            <Button className="flex items-center gap-2">
-              <Heart size={20} />
-              {post._count.likes}
+            {/* Like Button */}
+            <Button
+              disabled={toggleLikeMutation.isPending}
+              onClick={async () => {
+                await toggleLikeMutation.mutate({
+                  postId: post.id,
+                });
+              }}
+              className={
+                post.likes.some((like) => like.user.clerkId === user.user?.id)
+                  ? "text-red-500 hover:text-red-600"
+                  : "hover:text-red-500"
+              }
+            >
+              <Heart size={20} className="fill-current" />
+              <span className="text-white dark:text-black">
+                {post._count.likes}
+              </span>
             </Button>
 
             {/* Comment Button */}
@@ -124,6 +155,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
             </Button>
           </div>
 
+          {/* COMMENT LIST/SECTION */}
           {showComments && (
             <div className="mt-4 space-y-4">
               {post.comments.length > 0 ? (
@@ -138,7 +170,9 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
                     </Link>
                     <div>
                       <Link href={`/profile/${comment.author.username}`}>
-                        <h2 className="text-sm text-foreground/80">{comment.author.name}</h2>
+                        <h2 className="text-sm text-foreground/80">
+                          {comment.author.name}
+                        </h2>
                       </Link>
                       <p>{comment.content}</p>
                     </div>
@@ -149,6 +183,8 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               )}
             </div>
           )}
+
+          {/* ADD COMMENT */}
           <div className="w-full flex gap-4 items-center">
             <Textarea
               placeholder="Write a comment..."
@@ -157,21 +193,19 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               className="min-h-[80px] resize-none"
             />
 
-            <Button
-              size="sm"
-              disabled={commentMutation.isPending}
+            <LoadingButton
+              isPending={commentMutation.isPending}
               onClick={async () => {
                 await commentMutation.mutate({
                   postId: post.id,
                   content: newComment,
                 });
+                setShowComments(true);
               }}
             >
-              <>
-                <SendIcon className="size-4" />
-                Comment
-              </>
-            </Button>
+              <SendIcon className="size-4" />
+              Comment
+            </LoadingButton>
           </div>
         </div>
       </CardFooter>
