@@ -22,6 +22,9 @@ export default function FollowButton({
         queryKey: ["usersToFollow"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["profile"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["followStatus", targetUserId],
       });
     },

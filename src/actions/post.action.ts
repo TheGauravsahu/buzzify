@@ -84,7 +84,7 @@ export async function getPosts({ pageParam = 0 }) {
   return { posts, nextPage: posts.length === pageSize ? pageParam + 1 : null };
 }
 
-export async function getUserPosts() {
+export async function getCurrentUserPosts() {
   const userId = await getDbUserId();
   if (!userId) return;
 
@@ -97,7 +97,7 @@ export async function getUserPosts() {
         createdAt: "desc",
       },
       include: {
-        // author -> post
+        // post -> author
         author: {
           select: {
             id: true,
@@ -106,10 +106,10 @@ export async function getUserPosts() {
             username: true,
           },
         },
-        // comment -> post
+        // post -> comment
         comments: {
           include: {
-            // author -> post -> comments
+            // post -> comment -> author
             author: {
               select: {
                 id: true,
@@ -123,7 +123,7 @@ export async function getUserPosts() {
             createdAt: "asc",
           },
         },
-        // likes -> post
+        // post -> likes
         likes: {
           select: {
             userId: true,

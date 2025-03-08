@@ -20,3 +20,57 @@ export async function getProfileByUsername(username: string) {
 
   return user;
 }
+
+export async function getUserPosts(username: string) {
+  if (!username) return [];
+
+  const posts = await db.post.findMany({
+    where: {
+      author: {
+        username,
+      },
+    },
+    include: {
+      // post -> author
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          username: true,
+        },
+      },
+      // post -> comment
+      comments: {
+        include: {
+          // post -> comment -> author
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+      // post -> likes
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+    },
+  });
+
+  return posts;
+}
