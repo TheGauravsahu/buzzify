@@ -42,17 +42,6 @@ export async function getUserPosts(username: string) {
       },
       // post -> comment
       comments: {
-        include: {
-          // post -> comment -> author
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-              username: true,
-            },
-          },
-        },
         orderBy: {
           createdAt: "asc",
         },

@@ -84,6 +84,59 @@ export async function getPosts({ pageParam = 0 }) {
   return { posts, nextPage: posts.length === pageSize ? pageParam + 1 : null };
 }
 
+export const getPostById = async (postId: string) => {
+  const post = await db.post.findUnique({
+    where: { id: postId },
+    include: {
+      // post -> author
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          username: true,
+        },
+      },
+      // post -> comment
+      comments: {
+        include: {
+          // post -> comment -> author
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+      // post -> likes
+      likes: {
+        select: {
+          userId: true,
+          user: {
+            select: {
+              clerkId: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+    },
+  });
+
+  return post;
+};
+
 export async function getCurrentUserPosts() {
   const userId = await getDbUserId();
   if (!userId) return;
