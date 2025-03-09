@@ -16,8 +16,8 @@ async function main() {
   // Generate fake posts
   const postsData = Array.from({ length: 10 }).map((_, i) => ({
     title: `Post ${i + 1}`,
-    description: `This is a post ${i + 1} with some description.`,
-    image: `https://picsum.photos/id/${i + 20}/600/400`,
+    description: `This is a post ${i + 2} with some description.`,
+    image: `https://picsum.photos/id/${i + 30}/600/400`,
     authorId: existingUser.id,
   }));
 

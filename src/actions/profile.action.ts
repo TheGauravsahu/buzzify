@@ -30,6 +30,9 @@ export async function getUserPosts(username: string) {
         username,
       },
     },
+    orderBy:{
+      createdAt:"desc"
+    },
     include: {
       // post -> author
       author: {

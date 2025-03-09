@@ -66,9 +66,9 @@ export default function FollowerDialog({
         <DialogHeader>
           <DialogTitle>Followers</DialogTitle>
           <DialogDescription>
+            <div  className="flex flex-col gap-4">
             {followers?.map((user) => (
-              <div key={user.id} className="flex">
-                <div className="flex gap-2 items-center justify-between w-full">
+                <div key={user.id} className="flex gap-2 items-center justify-between w-full">
                   <div className="flex gap-2 items-center justify-between">
                     <Link href={`/profile/${user.follower.username}`}>
                       <Avatar>
@@ -78,7 +78,7 @@ export default function FollowerDialog({
                       </Avatar>
                     </Link>
 
-                    <div className="text-sm">
+                    <div className="text-sm flex flex-col items-start">
                       <Link
                         href={`/profile/${user.follower.username}`}
                         className="font-medium cursor-pointer"
@@ -95,8 +95,8 @@ export default function FollowerDialog({
                     <FollowButton targetUserId={user.follower.id} />
                   </div>
                 </div>
-              </div>
             ))}
+            </div>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
