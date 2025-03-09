@@ -18,11 +18,11 @@ export default function Home() {
       </div>
 
       <div className="w-full flex flex-col md:flex-row gap-6 items-start justify-start max-w-5xl mx-auto">
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <PostsList />
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block w-1/3">
           <WhoToFollow />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { getUserPosts } from "@/actions/post.action";
+import { getCurrentUserPosts } from "@/actions/post.action";
 import React from "react";
 
 export default function DashboardPage() {
@@ -12,7 +12,7 @@ export default function DashboardPage() {
 }
 
 async function ListUserPosts() {
-  const posts = await getUserPosts();
+  const posts = await getCurrentUserPosts();
 
   if (!posts) {
     return <div>No posts yet.</div>;
