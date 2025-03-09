@@ -106,7 +106,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
       </CardHeader>
 
       <CardContent className="p-4 sm:p-6">
-        <div className="relative h-72 overflow-hidden bg-secondary rounded-lg">
+        <div className="relative h-96 overflow-hidden bg-secondary rounded-lg">
           <Image
             fill
             className="object-cover hover:scale-105 cursor-pointer transition-transform duration-300"

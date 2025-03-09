@@ -47,7 +47,7 @@ const PostsListSkeleton = () => {
         <Card key={i} className="w-full">
           {/* topbar */}
           <CardHeader>
-            <div className="flex justify-between items-center p-4">
+            <div className="flex gap-4 md:gap-0 justify-between items-center p-4">
               {/* user profile */}
               <div className="flex gap-4 items-center">
                 <Skeleton className="h-12 w-12 rounded-full" />

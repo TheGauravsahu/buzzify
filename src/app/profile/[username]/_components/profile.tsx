@@ -2,6 +2,7 @@
 
 import { getProfileByUsername } from "@/actions/profile.action";
 import FollowButton from "@/components/FollowButton";
+import FollowingDialog from "@/components/FollowingDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,22 +30,22 @@ export default function Profile({ username }: { username: string }) {
   return (
     <Card className="w-full">
       <CardContent>
-        <div className="flex gap-16 items-center">
-          <div className="flex gap-16 items-center">
-            <Avatar className="w-28 h-28">
+        <div className="flex md:gap-16 gap-4 md:items-center justify-center">
+          <div className="flex md:gap-16 gap-8 items-start md:items-center">
+            <Avatar className="md:w-28 md:h-28 h-20 w-20">
               <AvatarImage src={user?.image ?? "/avatar.png"} />
             </Avatar>
 
             <div>
-              <div className="flex items-end gap-4">
-                <h1 className="mt-4 text-2xl font-bold">{user?.username}</h1>
+              <div className="flex md:flex-row flex-col md:items-end gap-4">
+                <h1 className="md:mt-4 text-2xl font-bold">{user?.username}</h1>
                 <FollowButton targetUserId={user?.id as string} />
               </div>
 
               {/* PROFILE STATS */}
               <div className="w-full my-4">
-                <div className="flex justify-between mb-4">
-                  <div className="flex items-center gap-2">
+                <div className="flex justify-between mb-4 gap-1">
+                  <div className="flex items-center gap-1 md:gap-2">
                     <div className="font-semibold">
                       {user?._count.posts.toLocaleString()}
                     </div>
@@ -52,7 +53,7 @@ export default function Profile({ username }: { username: string }) {
                   </div>
 
                   <Separator orientation="vertical" />
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 md:gap-2">
                     <div className="font-semibold">
                       {user?._count.followers.toLocaleString()}
                     </div>
@@ -61,14 +62,16 @@ export default function Profile({ username }: { username: string }) {
                     </div>
                   </div>
                   <Separator orientation="vertical" />
-                  <div className="flex items-center gap-2">
-                    <div className="font-semibold">
-                      {user?._count.following.toLocaleString()}
+                  <FollowingDialog userId={user?.id as string}>
+                    <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+                      <div className="font-semibold">
+                        {user?._count.following.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Following
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      Following
-                    </div>
-                  </div>
+                  </FollowingDialog>
                 </div>
               </div>
 

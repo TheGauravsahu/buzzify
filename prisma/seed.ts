@@ -17,7 +17,7 @@ async function main() {
   const postsData = Array.from({ length: 10 }).map((_, i) => ({
     title: `Post ${i + 1}`,
     description: `This is a post ${i + 1} with some description.`,
-    image: `https://picsum.photos/id/${i + 10}/600/400`,
+    image: `https://picsum.photos/id/${i + 20}/600/400`,
     authorId: existingUser.id,
   }));
 
