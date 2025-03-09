@@ -35,7 +35,6 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
 
   const user = useUser();
 
-
   // delete post mutation
   const mutation = useMutation({
     mutationFn: deletePost,

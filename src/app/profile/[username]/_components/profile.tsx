@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { useQuery } from "@tanstack/react-query";
 import { LinkIcon, MapPinIcon } from "lucide-react";
+import EditProfileDialog from "./edit-profile";
 
 export default function Profile({ username }: { username: string }) {
   const {
@@ -18,7 +19,7 @@ export default function Profile({ username }: { username: string }) {
     isPending,
     error,
   } = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["profile", username],
     queryFn: () => getProfileByUsername(username),
   });
 
@@ -40,10 +41,11 @@ export default function Profile({ username }: { username: string }) {
               <div className="flex md:flex-row flex-col md:items-end gap-4">
                 <h1 className="md:mt-4 text-2xl font-bold">{user?.username}</h1>
                 <FollowButton targetUserId={user?.id as string} />
+                <EditProfileDialog username={username} />
               </div>
 
               {/* PROFILE STATS */}
-              <div className="w-full my-4">
+              <div className="w-40 my-4">
                 <div className="flex justify-between mb-4 gap-1">
                   <div className="flex items-center gap-1 md:gap-2">
                     <div className="font-semibold">

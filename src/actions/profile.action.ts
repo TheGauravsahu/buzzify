@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/db";
+import { getDbUserId } from "./user.action";
 
 export async function getProfileByUsername(username: string) {
   const user = await db.user.findUnique({
@@ -117,4 +118,36 @@ export async function getProfileFollowersById(userId: string) {
   });
 
   return user?.followers;
+}
+
+export async function editProfile({
+  name,
+  username,
+  bio,
+  website,
+  location,
+}: {
+  name: string;
+  username: string;
+  bio: string;
+  website: string;
+  location: string;
+}) {
+  const userId = await getDbUserId();
+  if (!userId) throw new Error("Login to edit your profile.");
+
+  const user = await db.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      name,
+      username,
+      bio,
+      website,
+      location,
+    },
+  });
+
+  return user;
 }
