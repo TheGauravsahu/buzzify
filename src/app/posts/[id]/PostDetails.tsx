@@ -59,9 +59,9 @@ export default function PostDetails({ postId }: { postId: string }) {
   if (!post) return notFound();
 
   return (
-    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-full">
+    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-full border">
       {/* POST IMAGE */}
-      <div className="border w-full md:w-[70%] h-[80vh] md:h-full overflow-hidden aspect-square">
+      <div className="border w-full h-[80vh] md:h-full overflow-hidden aspect-square bg-primary/10">
         <Image
           src={post.image as string}
           alt={post.title}
