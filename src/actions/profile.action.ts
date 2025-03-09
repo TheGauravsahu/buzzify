@@ -21,8 +21,16 @@ export async function getProfileByUsername(username: string) {
   return user;
 }
 
-export async function getUserPosts(username: string) {
-  if (!username) return [];
+export async function getUserPosts({
+  username,
+  pageParam = 0,
+}: {
+  username: string;
+  pageParam: number;
+}) {
+  if (!username) return { posts: [], nextPage: null };
+
+  const pageSize = 6;
 
   const posts = await db.post.findMany({
     where: {
@@ -30,9 +38,11 @@ export async function getUserPosts(username: string) {
         username,
       },
     },
-    orderBy:{
-      createdAt:"desc"
+    orderBy: {
+      createdAt: "desc",
     },
+    take: pageSize,
+    skip: pageParam * pageSize,
     include: {
       // post -> author
       author: {
@@ -64,7 +74,7 @@ export async function getUserPosts(username: string) {
     },
   });
 
-  return posts;
+  return { posts, nextPage: posts.length === pageSize ? pageParam + 1 : null };
 }
 
 export async function getProfileFollowingsById(userId: string) {
