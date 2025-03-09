@@ -12,7 +12,8 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { useQuery } from "@tanstack/react-query";
 import { LinkIcon, MapPinIcon } from "lucide-react";
 import EditProfileDialog from "./edit-profile";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 export default function Profile({ username }: { username: string }) {
   const {
@@ -42,7 +43,15 @@ export default function Profile({ username }: { username: string }) {
             <div>
               <div className="flex md:flex-row flex-col md:items-end gap-4">
                 <h1 className="md:mt-4 text-2xl font-bold">{user?.username}</h1>
-                <FollowButton targetUserId={user?.id as string} />
+                {session.isSignedIn ? (
+                  <FollowButton targetUserId={user?.id as string} />
+                ) : (
+                  <SignInButton mode="modal">
+                    <Button variant="default" className="cursor-pointer">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                )}
                 {user?.clerkId === session.user?.id && (
                   <EditProfileDialog username={username} />
                 )}
