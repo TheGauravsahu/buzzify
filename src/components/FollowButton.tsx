@@ -18,18 +18,7 @@ export default function FollowButton({
     mutationFn: toggleFollow,
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["usersToFollow"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["profile"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["followings"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["followStatus", targetUserId],
-      });
+      queryClient.invalidateQueries(); // This will refetch all queries
     },
     onError: (error) => {
       toast.error((error as Error).message);

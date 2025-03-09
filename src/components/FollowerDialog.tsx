@@ -10,12 +10,12 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Skeleton } from "./ui/skeleton";
-import { getProfileFollowingsById } from "@/actions/profile.action";
+import { getProfileFollowersById } from "@/actions/profile.action";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import FollowButton from "./FollowButton";
 
-export default function FollowingDialog({
+export default function FollowerDialog({
   children,
   userId,
 }: {
@@ -25,12 +25,12 @@ export default function FollowingDialog({
   const queryClient = useQueryClient();
 
   const {
-    data: followings,
+    data: followers,
     isPending,
     error,
   } = useQuery({
-    queryKey: ["followings", userId],
-    queryFn: () => getProfileFollowingsById(userId),
+    queryKey: ["followers", userId],
+    queryFn: () => getProfileFollowersById(userId),
   });
 
   if (isPending)
@@ -64,35 +64,35 @@ export default function FollowingDialog({
       <DialogTrigger onClick={handleRefetch}>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Followings</DialogTitle>
+          <DialogTitle>Followers</DialogTitle>
           <DialogDescription>
-            {followings?.map((user) => (
+            {followers?.map((user) => (
               <div key={user.id} className="flex">
                 <div className="flex gap-2 items-center justify-between w-full">
                   <div className="flex gap-2 items-center justify-between">
-                    <Link href={`/profile/${user.following.username}`}>
+                    <Link href={`/profile/${user.follower.username}`}>
                       <Avatar>
                         <AvatarImage
-                          src={user.following.image ?? "/avatar.png"}
+                          src={user.follower.image ?? "/avatar.png"}
                         />
                       </Avatar>
                     </Link>
 
                     <div className="text-sm">
                       <Link
-                        href={`/profile/${user.following.username}`}
+                        href={`/profile/${user.follower.username}`}
                         className="font-medium cursor-pointer"
                       >
-                        {user.following.name}
+                        {user.follower.name}
                       </Link>
                       <p className="text-muted-foreground">
-                        @{user.following.username}
+                        @{user.follower.username}
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <FollowButton targetUserId={user.following.id} />
+                    <FollowButton targetUserId={user.follower.id} />
                   </div>
                 </div>
               </div>

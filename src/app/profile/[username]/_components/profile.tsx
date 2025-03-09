@@ -2,6 +2,7 @@
 
 import { getProfileByUsername } from "@/actions/profile.action";
 import FollowButton from "@/components/FollowButton";
+import FollowerDialog from "@/components/FollowerDialog";
 import FollowingDialog from "@/components/FollowingDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,14 +53,17 @@ export default function Profile({ username }: { username: string }) {
                   </div>
 
                   <Separator orientation="vertical" />
-                  <div className="flex items-center gap-1 md:gap-2">
-                    <div className="font-semibold">
-                      {user?._count.followers.toLocaleString()}
+                  <FollowerDialog userId={user?.id as string}>
+                    <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+                      <div className="font-semibold">
+                        {user?._count.followers.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Followers
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      Followers
-                    </div>
-                  </div>
+                  </FollowerDialog>
+
                   <Separator orientation="vertical" />
                   <FollowingDialog userId={user?.id as string}>
                     <div className="flex items-center gap-1 md:gap-2 cursor-pointer">

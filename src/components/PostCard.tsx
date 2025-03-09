@@ -75,13 +75,13 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <Link href={`/profile/${post.author.username}`}>
+            <Link prefetch={true} href={`/profile/${post.author.username}`}>
               <Avatar className="size-8 sm:w-10 sm:h-10">
                 <AvatarImage src={post.author.image ?? "/avatar.png"} />
               </Avatar>
             </Link>
             <div className="flex flex-col">
-              <Link href={`/profile/${post.author.username}`}>
+              <Link prefetch={true} href={`/profile/${post.author.username}`}>
                 <h2>{post.author.name}</h2>
               </Link>
               <h3 className="text-sm text-foreground/60">

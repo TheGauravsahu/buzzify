@@ -84,3 +84,24 @@ export async function getProfileFollowingsById(userId: string) {
 
   return user?.following;
 }
+
+export async function getProfileFollowersById(userId: string) {
+  if (!userId) return [];
+
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      username: true,
+      followers: {
+        include: {
+          follower: true,
+        },
+      },
+    },
+  });
+
+  return user?.followers;
+}
