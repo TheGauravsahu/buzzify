@@ -42,6 +42,7 @@ export async function getPosts({ pageParam = 0 }) {
           name: true,
           image: true,
           username: true,
+          clerkId: true,
         },
       },
       // comment -> post

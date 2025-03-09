@@ -17,7 +17,7 @@ import LoadingButton from "./LoadingButton";
 import { SignInButton, useUser } from "@clerk/nextjs";
 
 type PostWithRelations = Post & {
-  author: Pick<User, "id" | "name" | "image" | "username">;
+  author: Pick<User, "id" | "name" | "image" | "username" | "clerkId">;
   comments: (Comment & {
     author: Pick<User, "id" | "name" | "image" | "username">;
   })[];
@@ -35,11 +35,12 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
 
   const user = useUser();
 
+
   // delete post mutation
   const mutation = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts", post.id] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -52,7 +53,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     onSuccess: () => {
       setNewComment("");
       setShowComments(true);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts", post.id] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -92,15 +93,17 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
 
           <div className="*:cursor-pointer">
             <p className="text-xs mb-2">{formatDate(post.createdAt)}</p>
-            <LoadingButton
-              variant="secondary"
-              isPending={mutation.isPending}
-              onClick={() => {
-                mutation.mutate(post.id);
-              }}
-            >
-              Delete
-            </LoadingButton>
+            {user.user?.id === post.author.clerkId && (
+              <LoadingButton
+                variant="secondary"
+                isPending={mutation.isPending}
+                onClick={() => {
+                  mutation.mutate(post.id);
+                }}
+              >
+                Delete
+              </LoadingButton>
+            )}
           </div>
         </div>
       </CardHeader>
