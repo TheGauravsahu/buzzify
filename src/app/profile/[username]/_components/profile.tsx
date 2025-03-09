@@ -12,6 +12,7 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { useQuery } from "@tanstack/react-query";
 import { LinkIcon, MapPinIcon } from "lucide-react";
 import EditProfileDialog from "./edit-profile";
+import { useUser } from "@clerk/nextjs";
 
 export default function Profile({ username }: { username: string }) {
   const {
@@ -22,6 +23,7 @@ export default function Profile({ username }: { username: string }) {
     queryKey: ["profile", username],
     queryFn: () => getProfileByUsername(username),
   });
+  const session = useUser();
 
   if (error) return <div>An error occured.</div>;
 
@@ -41,7 +43,9 @@ export default function Profile({ username }: { username: string }) {
               <div className="flex md:flex-row flex-col md:items-end gap-4">
                 <h1 className="md:mt-4 text-2xl font-bold">{user?.username}</h1>
                 <FollowButton targetUserId={user?.id as string} />
-                <EditProfileDialog username={username} />
+                {user?.clerkId === session.user?.id && (
+                  <EditProfileDialog username={username} />
+                )}
               </div>
 
               {/* PROFILE STATS */}
