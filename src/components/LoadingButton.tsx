@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { Loader2, Variable } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface LoadingButtonProps {
   children: React.ReactNode;

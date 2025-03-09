@@ -6,7 +6,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { BellIcon, HomeIcon, LogOutIcon, UserIcon } from "lucide-react";
-import { SignInButton, SignOutButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignOutButton } from "@clerk/nextjs";
 
 import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";

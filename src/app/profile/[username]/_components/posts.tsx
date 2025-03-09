@@ -24,11 +24,8 @@ export default function ProfilePosts({ username }: { username: string }) {
   return (
     <div className="my-4 flex items-center justify-center gap-2 *:cursor-pointer flex-wrap">
       {posts?.map((post) => (
-        <Link href={`/posts/${post.id}`} prefetch={true}>
-          <div
-            key={post.id}
-            className="relative group cursor-pointer aspect-square h-60 w-60 overflow-hidden"
-          >
+        <Link key={post.id} href={`/posts/${post.id}`} prefetch={true}>
+          <div className="relative group cursor-pointer aspect-square h-60 w-60 overflow-hidden">
             <Image
               src={post.image as string}
               alt={post.title}
