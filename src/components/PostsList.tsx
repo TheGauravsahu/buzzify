@@ -31,7 +31,7 @@ export default function PostsList() {
     >
       <div className="flex flex-1 flex-col gap-8 overflow-hidden w-full h-full   mx-auto">
         {posts.map((post) => (
-          <PostCard post={post} />
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
     </InfiniteScroll>

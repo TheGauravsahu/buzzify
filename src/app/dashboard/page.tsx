@@ -21,7 +21,7 @@ async function ListUserPosts() {
   return (
     <div className="mt-4 grid grid-cols-1 gap-4">
       {posts.map((post) => (
-        <pre className="whitespace-pre-wrap break-words">
+        <pre  key={post.id} className="whitespace-pre-wrap break-words">
           {JSON.stringify(post, null, 2)}
         </pre>
       ))}

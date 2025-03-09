@@ -31,7 +31,7 @@ export default function FollowButton({
         queryKey: ["followStatus", targetUserId],
       });
     },
-    onError: (error, _, context) => {
+    onError: (error) => {
       toast.error((error as Error).message);
     },
   });

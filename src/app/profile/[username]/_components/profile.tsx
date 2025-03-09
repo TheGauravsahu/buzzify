@@ -4,7 +4,6 @@ import { getProfileByUsername } from "@/actions/profile.action";
 import FollowButton from "@/components/FollowButton";
 import FollowingDialog from "@/components/FollowingDialog";
 import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
