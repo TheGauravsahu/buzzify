@@ -123,7 +123,7 @@ export default function PostDetails({ postId }: { postId: string }) {
               </div>
             ))
           ) : (
-            <p>No comments yet.</p>
+            <p className="p-4 text-muted-foreground">No comments yet.</p>
           )}
         </div>
 
