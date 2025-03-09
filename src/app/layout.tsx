@@ -22,8 +22,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  post,
 }: Readonly<{
   children: React.ReactNode;
+  post: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -33,7 +35,10 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen">
             <Navbar />
-            <main className="py-8 md:px-16 px-4">{children}</main>
+            <main className="py-8 md:px-16 px-4">
+              {post}
+              {children}
+            </main>
             <Toaster />
           </div>
         </Providers>
