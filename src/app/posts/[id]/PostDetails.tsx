@@ -3,6 +3,7 @@ import { createComment, getPostById, toggleLike } from "@/actions/post.action";
 import LoadingButton from "@/components/LoadingButton";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";
@@ -192,5 +193,55 @@ export default function PostDetails({ postId }: { postId: string }) {
 }
 
 const PostDetailsSkeleton = () => {
-  return <div>load</div>;
+  return (
+    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-[80vh]">
+      {/* POST IMAGE */}
+      <Skeleton className="border w-full md:w-[70%] h-full overflow-hidden aspect-square" />
+
+      {/* RIGHT -> POST INFORMATION */}
+      <div className="border w-full md:w-1/2 h-full">
+        {/* Post -> Author(user) */}
+        <div className="flex justify-between items-center md:border-b p-2">
+          <div  className="flex gap-4 items-center">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-36" />
+            </div>
+          </div>
+        </div>
+
+        {/* Post Info */}
+        <div className="p-4">
+          <Skeleton className="h-4 w-[250px]" />
+          <Skeleton className="h-4 w-[200px] my-2" />
+        </div>
+
+        {/* COMMENT LIST/SECTION */}
+        <div className="mt-4 space-y-4 h-[30%] md:h-[45vh] overflow-y-auto scrollbar-hide  p-2">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex gap-4 items-center">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-36" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* POST INTERECTIONS */}
+        <div className="border-t flex items-center  gap-2 p-2">
+          <Skeleton className="h-8 w-12" />
+          <Skeleton className="h-8 w-12" />
+        </div>
+
+        {/* ADD COMMENT */}
+        <div className="w-full flex gap-2 items-center p-2">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+      </div>
+    </div>
+  );
 };
