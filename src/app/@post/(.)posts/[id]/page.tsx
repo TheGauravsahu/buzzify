@@ -16,7 +16,7 @@ export default async function PostModel({
         <CloseButton />
       </div>
 
-      <div className="bg-background rounded-lg overflow-hidden shadow-lg z-10 max-w-4xl w-full">
+      <div className="bg-background rounded-lg overflow-hidden shadow-lg z-10 md:max-w-4xl w-[90%] h-[90vh] ">
         <PostDetails postId={id} />
       </div>
     </div>

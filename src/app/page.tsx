@@ -10,6 +10,7 @@ export default function Home() {
 
       <div className="my-4">
         <Link
+          prefetch={true}
           className={buttonVariants({ variant: "secondary" })}
           href="/dashboard/create"
         >

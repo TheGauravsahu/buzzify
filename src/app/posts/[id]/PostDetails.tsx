@@ -25,7 +25,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     mutationFn: createComment,
     onSuccess: () => {
       setNewComment("");
-      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -59,9 +59,9 @@ export default function PostDetails({ postId }: { postId: string }) {
   if (!post) return notFound();
 
   return (
-    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-[80vh]">
+    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-full">
       {/* POST IMAGE */}
-      <div className="border w-full md:w-[70%] h-full overflow-hidden aspect-square">
+      <div className="border w-full md:w-[70%] h-[80vh] md:h-full overflow-hidden aspect-square">
         <Image
           src={post.image as string}
           alt={post.title}
@@ -76,13 +76,13 @@ export default function PostDetails({ postId }: { postId: string }) {
         {/* Post -> Author(user) */}
         <div className="flex justify-between items-center md:border-b p-2">
           <div className="flex items-center gap-2">
-            <Link href={`/profile/${post.author.username}`}>
+            <Link prefetch={true} href={`/profile/${post.author.username}`}>
               <Avatar className="size-8 sm:w-8 sm:h-8">
                 <AvatarImage src={post.author.image ?? "/avatar.png"} />
               </Avatar>
             </Link>
             <div className="flex flex-col">
-              <Link href={`/profile/${post.author.username}`}>
+              <Link prefetch={true} href={`/profile/${post.author.username}`}>
                 <p className="text-sm">{post.author.name}</p>
               </Link>
               <p className="text-xs text-foreground/60">
@@ -103,17 +103,23 @@ export default function PostDetails({ postId }: { postId: string }) {
         </div>
 
         {/* COMMENT LIST/SECTION */}
-        <div className="mt-4 space-y-4 h-[30%] md:h-[45vh] overflow-y-auto scrollbar-hide  p-2">
+        <div className="mt-4 space-y-4 h-[30vh] md:h-[55vh] overflow-y-auto scrollbar-hide  p-2">
           {post.comments.length > 0 ? (
             post.comments.map((comment) => (
               <div key={comment.id} className="flex items-center gap-4">
-                <Link href={`/profile/${comment.author.username}`}>
+                <Link
+                  prefetch={true}
+                  href={`/profile/${comment.author.username}`}
+                >
                   <Avatar className="size-8 sm:w-10 sm:h-10">
                     <AvatarImage src={comment.author.image ?? "/avatar.png"} />
                   </Avatar>
                 </Link>
                 <div>
-                  <Link href={`/profile/${comment.author.username}`}>
+                  <Link
+                    prefetch={true}
+                    href={`/profile/${comment.author.username}`}
+                  >
                     <h2 className="text-sm text-foreground/80">
                       {comment.author.name}
                     </h2>
@@ -202,7 +208,7 @@ const PostDetailsSkeleton = () => {
       <div className="border w-full md:w-1/2 h-full">
         {/* Post -> Author(user) */}
         <div className="flex justify-between items-center md:border-b p-2">
-          <div  className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center">
             <Skeleton className="h-12 w-12 rounded-full" />
             <div className="flex flex-col gap-2">
               <Skeleton className="h-4 w-32" />

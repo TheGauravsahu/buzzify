@@ -9,12 +9,7 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function ProfilePosts({ username }: { username: string }) {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    status,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, status } = useInfiniteQuery({
     queryKey: ["posts", username],
     queryFn: ({ pageParam = 0 }) => getUserPosts({ pageParam, username }),
     initialPageParam: 0,
@@ -33,11 +28,17 @@ export default function ProfilePosts({ username }: { username: string }) {
       next={fetchNextPage}
       hasMore={!!hasNextPage}
       loader={<ProfilePostsSkeleton />}
-      endMessage={<h3 className="text-center text-muted-foreground">No more posts.</h3>}
+      endMessage={
+        <h3 className="text-center text-muted-foreground">No more posts.</h3>
+      }
     >
       <div className="my-4 flex items-center justify-center gap-2 *:cursor-pointer flex-wrap">
         {posts?.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} prefetch={true}>
+          <Link
+            prefetch={true}
+            key={post.id}
+            href={`/posts/${post.id}`}
+          >
             <div className="relative group cursor-pointer aspect-square h-60 w-60 overflow-hidden">
               <Image
                 src={post.image as string}

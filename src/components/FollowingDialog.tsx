@@ -73,7 +73,10 @@ export default function FollowingDialog({
                   className="flex gap-2 items-center justify-between w-full"
                 >
                   <div className="flex gap-2 items-center justify-between">
-                    <Link href={`/profile/${user.following.username}`}>
+                    <Link
+                      prefetch={true}
+                      href={`/profile/${user.following.username}`}
+                    >
                       <Avatar>
                         <AvatarImage
                           src={user.following.image ?? "/avatar.png"}

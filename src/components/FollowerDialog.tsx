@@ -66,11 +66,17 @@ export default function FollowerDialog({
         <DialogHeader>
           <DialogTitle>Followers</DialogTitle>
           <DialogDescription>
-            <div  className="flex flex-col gap-4">
-            {followers?.map((user) => (
-                <div key={user.id} className="flex gap-2 items-center justify-between w-full">
+            <div className="flex flex-col gap-4">
+              {followers?.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex gap-2 items-center justify-between w-full"
+                >
                   <div className="flex gap-2 items-center justify-between">
-                    <Link href={`/profile/${user.follower.username}`}>
+                    <Link
+                      prefetch={true}
+                      href={`/profile/${user.follower.username}`}
+                    >
                       <Avatar>
                         <AvatarImage
                           src={user.follower.image ?? "/avatar.png"}
@@ -95,7 +101,7 @@ export default function FollowerDialog({
                     <FollowButton targetUserId={user.follower.id} />
                   </div>
                 </div>
-            ))}
+              ))}
             </div>
           </DialogDescription>
         </DialogHeader>
