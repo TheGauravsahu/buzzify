@@ -76,6 +76,7 @@ export async function getRandomUsers() {
         {
           NOT: {
             // TODO: remove users that we already follow
+            // UPDATE: Not doing right now because there's mot much users.
           },
         },
       ],

@@ -62,8 +62,9 @@ export default function PostDetails({ postId }: { postId: string }) {
   return (
     <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-full border">
       {/* POST IMAGE */}
-      <div className="border w-full h-[80vh] md:h-full overflow-hidden aspect-square bg-primary/10">
+      <div className="border w-full h-full md:h-full overflow-hidden aspect-square bg-primary/10">
         <Image
+          priority
           src={post.image as string}
           alt={post.title}
           width={600}
@@ -104,7 +105,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         </div>
 
         {/* COMMENT LIST/SECTION */}
-        <div className="mt-4 space-y-4 h-[30vh] md:h-[55vh] overflow-y-auto scrollbar-hide  p-2">
+        <div className="mt-4 space-y-4 h-[30%] md:h-[60%] overflow-y-auto scrollbar-hide  p-2">
           {post.comments.length > 0 ? (
             post.comments.map((comment) => (
               <div key={comment.id} className="flex items-center gap-4">
