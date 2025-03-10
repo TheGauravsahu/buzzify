@@ -9,7 +9,7 @@ import { getUserByClerkId } from "@/actions/user.action";
 
 export default async function DesktopNavbar() {
   const session = await currentUser();
-  const user = await getUserByClerkId(session?.id!);
+  const user = await getUserByClerkId(session?.id as string);
 
   return (
     <div className="hidden md:flex items-center space-x-4">
@@ -31,7 +31,7 @@ export default async function DesktopNavbar() {
             </Link>
           </Button>
           <Button variant="ghost" className="flex items-center gap-2" asChild>
-            <Link prefetch={true} href={`/profile/${user?.username}`}>
+            <Link prefetch={true} href={`/profile/${user?.username as string}`}>
               <UserIcon className="w-4 h-4" />
               <span className="hidden lg:inline">Profile</span>
             </Link>
