@@ -1,39 +1,22 @@
 "use client";
-import { createComment, getPostById } from "@/actions/post.action";
-import LoadingButton from "@/components/LoadingButton";
+import { getPostById } from "@/actions/post.action";
+import AddComment from "@/components/post/AddComment";
+import CommentList from "@/components/post/CommentList";
 import LikeButton from "@/components/post/LikeButton";
 import SavePost from "@/components/post/SavePost";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/utils";
-import { SignInButton, useUser } from "@clerk/nextjs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { MessageCircle, SendIcon } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
+import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export default function PostDetails({ postId }: { postId: string }) {
-  const [newComment, setNewComment] = useState("");
   const user = useUser();
-  const queryClient = useQueryClient();
-
-  // add a comment
-  const commentMutation = useMutation({
-    mutationFn: createComment,
-    onSuccess: () => {
-      setNewComment("");
-      queryClient.invalidateQueries();
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
   const {
     data: post,
     error,
@@ -88,53 +71,22 @@ export default function PostDetails({ postId }: { postId: string }) {
           </div>
         </div>
 
-          {/* Post Info */}
-          <div className="p-4">
-            <h1>{post.title}</h1>
-            <p className="text-sm text-muted-foreground">{post.description}</p>
-          </div>
+        {/* Post Info */}
+        <div className="p-4">
+          <h1>{post.title}</h1>
+          <p className="text-sm text-muted-foreground">{post.description}</p>
+        </div>
 
-          <div />
+        {/* COMMENT LIST/SECTION */}
+        <div className="h-[60%] p-2">
+          <CommentList postId={post.id} initialState={post.comments} />
+        </div>
 
-          {/* COMMENT LIST/SECTION */}
-          <div className="mt-4 space-y-4 h-[60%] overflow-y-auto scrollbar-hide  p-2">
-            {post.comments.length > 0 ? (
-              post.comments.map((comment) => (
-                <div key={comment.id} className="flex items-center gap-4">
-                  <Link
-                    prefetch={true}
-                    href={`/profile/${comment.author.username}`}
-                  >
-                    <Avatar className="size-8 sm:w-10 sm:h-10">
-                      <AvatarImage
-                        src={comment.author.image ?? "/avatar.png"}
-                      />
-                    </Avatar>
-                  </Link>
-                  <div>
-                    <Link
-                      prefetch={true}
-                      href={`/profile/${comment.author.username}`}
-                    >
-                      <h2 className="text-sm text-foreground/80">
-                        {comment.author.name}
-                      </h2>
-                    </Link>
-                    <p>{comment.content}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="p-4 text-muted-foreground">No comments yet.</p>
-            )}
-          </div>
-
-        <div className="flex flex-col gap-2 p-2 border-t justify-end">
-          {/* POST INTERECTIONS */}
-          <div className=" flex items-center  gap-2">
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex items-center w-full gap-4">
             {/* Like Button */}
             <LikeButton
-              postId={postId}
+              postId={post.id}
               initialState={{
                 likes: post._count.likes,
                 isLikedByUser: post.likes.some(
@@ -161,37 +113,8 @@ export default function PostDetails({ postId }: { postId: string }) {
           </div>
 
           {/* ADD COMMENT */}
-          <div className="w-full flex gap-2 items-center">
-            <Textarea
-              placeholder="Write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="min-h-[50px] resize-none"
-            />
-
-            {user.isSignedIn ? (
-              <LoadingButton
-                isPending={commentMutation.isPending}
-                onClick={async () => {
-                  await commentMutation.mutate({
-                    postId: post.id,
-                    content: newComment,
-                  });
-                }}
-              >
-                <SendIcon className="size-4" />
-                Comment
-              </LoadingButton>
-            ) : (
-              <SignInButton mode="modal">
-                <Button variant="default" className="cursor-pointer">
-                  Sign In
-                </Button>
-              </SignInButton>
-            )}
-          </div>
+          <AddComment postId={post.id} />
         </div>
-
       </div>
     </div>
   );

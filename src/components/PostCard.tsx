@@ -4,24 +4,24 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createComment, deletePost } from "@/actions/post.action";
+import { deletePost } from "@/actions/post.action";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { formatDate } from "@/lib/utils";
-import { MessageCircle, SendIcon } from "lucide-react";
-import { Textarea } from "./ui/textarea";
+import { MessageCircle } from "lucide-react";
 import LoadingButton from "./LoadingButton";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import SavePost from "./post/SavePost";
 import { PostWithRelations } from "@/types/post.types";
 import LikeButton from "./post/LikeButton";
+import CommentList from "./post/CommentList";
+import AddComment from "./post/AddComment";
 
 export default function PostCard({ post }: { post: PostWithRelations }) {
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
-  const [newComment, setNewComment] = useState("");
 
   const user = useUser();
 
@@ -30,19 +30,6 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     mutationFn: deletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts", post.id] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // add a comment
-  const commentMutation = useMutation({
-    mutationFn: createComment,
-    onSuccess: () => {
-      setNewComment("");
-      setShowComments(true);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -129,7 +116,6 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
             </Button>
 
             {/* Save Post */}
-            {/* Save Post */}
             <SavePost
               postId={post.id}
               initialState={{
@@ -142,63 +128,11 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
 
           {/* COMMENT LIST/SECTION */}
           {showComments && (
-            <div className="mt-4 space-y-4">
-              {post.comments.length > 0 ? (
-                post.comments.map((comment) => (
-                  <div key={comment.id} className="flex items-center gap-4">
-                    <Link href={`/profile/${comment.author.username}`}>
-                      <Avatar className="size-8 sm:w-10 sm:h-10">
-                        <AvatarImage
-                          src={comment.author.image ?? "/avatar.png"}
-                        />
-                      </Avatar>
-                    </Link>
-                    <div>
-                      <Link href={`/profile/${comment.author.username}`}>
-                        <h2 className="text-sm text-foreground/80">
-                          {comment.author.name}
-                        </h2>
-                      </Link>
-                      <p>{comment.content}</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p>No comments yet.</p>
-              )}
-            </div>
+            <CommentList postId={post.id} initialState={post.comments} />
           )}
 
           {/* ADD COMMENT */}
-          <div className="w-full flex gap-4 items-center">
-            <Textarea
-              placeholder="Write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="min-h-[80px] resize-none"
-            />
-
-            {user.isSignedIn ? (
-              <LoadingButton
-                isPending={commentMutation.isPending}
-                onClick={async () => {
-                  await commentMutation.mutate({
-                    postId: post.id,
-                    content: newComment,
-                  });
-                }}
-              >
-                <SendIcon className="size-4" />
-                Comment
-              </LoadingButton>
-            ) : (
-              <SignInButton mode="modal">
-                <Button variant="default" className="cursor-pointer">
-                  Sign In
-                </Button>
-              </SignInButton>
-            )}
-          </div>
+          <AddComment postId={post.id} />
         </div>
       </CardFooter>
     </Card>
