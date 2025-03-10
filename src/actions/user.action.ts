@@ -35,7 +35,7 @@ export async function syncUser() {
 }
 
 export async function getUserByClerkId(clerkId: string) {
-  return db.user.findUnique({
+  return db.user.findFirst({
     where: {
       clerkId,
     },
