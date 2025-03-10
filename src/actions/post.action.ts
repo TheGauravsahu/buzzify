@@ -45,7 +45,23 @@ export async function getPosts({ pageParam = 0 }) {
           clerkId: true,
         },
       },
-
+      // comment -> post
+      comments: {
+        include: {
+          // author -> post -> comments
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
       // likes -> post
       likes: {
         select: {
