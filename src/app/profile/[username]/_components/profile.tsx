@@ -14,7 +14,6 @@ import { LinkIcon, MapPinIcon } from "lucide-react";
 import EditProfileDialog from "./edit-profile";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { notFound } from "next/navigation";
 
 export default function Profile({ username }: { username: string }) {
   const {
