@@ -14,6 +14,7 @@ import { LinkIcon, MapPinIcon } from "lucide-react";
 import EditProfileDialog from "./edit-profile";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { notFound } from "next/navigation";
 
 export default function Profile({ username }: { username: string }) {
   const {
@@ -24,6 +25,9 @@ export default function Profile({ username }: { username: string }) {
     queryKey: ["profile", username],
     queryFn: () => getProfileByUsername(username),
   });
+
+  if (!user) return notFound();
+
   const session = useUser();
 
   if (error) return <div>An error occured.</div>;
