@@ -127,6 +127,8 @@ export async function toggleFollow(targetUserId: string) {
   }
 }
 
+
+
 export async function checkIfFollowing(targetUserId: string) {
   const userId = await getDbUserId();
   if (!userId) return false;

@@ -23,7 +23,7 @@ export default function CommentList({
     queryKey,
     queryFn: () => getPostsComments(postId),
     initialData: initialState,
-    staleTime: 20,
+    staleTime: 10,
   });
 
   return (

@@ -1,5 +1,4 @@
 "use client";
-
 import { checkIfFollowing, toggleFollow } from "@/actions/user.action";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingButton from "./LoadingButton";
