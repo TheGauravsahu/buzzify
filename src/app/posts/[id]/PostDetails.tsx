@@ -205,7 +205,7 @@ export default function PostDetails({ postId }: { postId: string }) {
 
 const PostDetailsSkeleton = () => {
   return (
-    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-[80vh]">
+    <div className="w-full md:w-4xl mx-auto flex flex-col md:flex-row items-center h-full">
       {/* POST IMAGE */}
       <Skeleton className="border w-full md:w-[70%] h-full overflow-hidden aspect-square" />
 
