@@ -45,8 +45,11 @@ export default function LikeButton({ initialState, postId }: LikeButtonProps) {
           (previousState?.likes || 0) + (previousState?.isLikedByUser ? -1 : 1),
         isLikedByUser: !previousState?.isLikedByUser,
       }));
+
+      return { previousState };
     },
-    onError: (error) => {
+    onError: (error, _, context) => {
+      queryClient.setQueryData(queryKey, context?.previousState);
       toast.error(error.message);
     },
   });
