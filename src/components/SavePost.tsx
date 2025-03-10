@@ -17,7 +17,7 @@ export default function SavePost({ postId }: { postId: string }) {
   const mutatiton = useMutation({
     mutationFn: toggleSavePost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["savedPosts", postId] });
+      queryClient.invalidateQueries({ queryKey: ["savedPosts"] });
       queryClient.invalidateQueries({ queryKey: ["savedPosts", postId] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },

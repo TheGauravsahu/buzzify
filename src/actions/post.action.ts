@@ -305,7 +305,6 @@ export async function getSavedPostDetails(postId: string) {
     where: {
       postId,
     },
-
     select: {
       user: {
         select: {
@@ -313,16 +312,12 @@ export async function getSavedPostDetails(postId: string) {
           clerkId: true,
         },
       },
-
       post: {
         select: {
           id: true,
-          image: true,
           author: {
             select: {
               id: true,
-              image: true,
-              clerkId: true,
             },
           },
         },
