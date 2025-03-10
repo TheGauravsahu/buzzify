@@ -31,7 +31,7 @@ export default function PostsList() {
         <h3 className="text-center text-muted-foreground">No more posts.</h3>
       }
     >
-      <div className="flex flex-1 flex-col gap-8 overflow-hidden w-full h-full   mx-auto">
+      <div className="flex flex-1   flex-col gap-8 overflow-hidden w-full h-full   mx-auto">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
@@ -44,7 +44,7 @@ const PostsListSkeleton = () => {
   const skeletonCount = [1, 2];
 
   return (
-    <div className="flex flex-col gap-8 mt-8 justify-center md:justify-normal md:items-start items-center  w-full  mx-auto">
+    <div className="flex flex-col gap-8  justify-center md:justify-normal md:items-start items-center  w-full  mx-auto">
       {skeletonCount.map((i) => (
         <Card key={i} className="w-full">
           {/* topbar */}

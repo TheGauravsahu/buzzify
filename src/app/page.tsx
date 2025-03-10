@@ -19,7 +19,7 @@ export default function Home() {
       </div>
 
       <div className="w-full flex flex-col md:flex-row gap-6 items-start justify-start max-w-5xl mx-auto">
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full items-start">
           <PostsList />
         </div>
 

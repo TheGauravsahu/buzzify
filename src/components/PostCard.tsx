@@ -111,6 +111,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
         <div className="relative h-96 overflow-hidden bg-secondary rounded-lg">
           <Image
             fill
+            priority={true}
             className="object-cover hover:scale-105 cursor-pointer transition-transform duration-300"
             src={post.image as string}
             alt={post.title}
