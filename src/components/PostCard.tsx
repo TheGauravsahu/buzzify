@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { Post, User, Comment } from "@prisma/client";
 import { Button } from "./ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  QueryFilters,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createComment, deletePost, toggleLike } from "@/actions/post.action";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
@@ -16,18 +20,8 @@ import { Textarea } from "./ui/textarea";
 import LoadingButton from "./LoadingButton";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import SavePost from "./SavePost";
-
-type PostWithRelations = Post & {
-  author: Pick<User, "id" | "name" | "image" | "username" | "clerkId">;
-  comments: (Comment & {
-    author: Pick<User, "id" | "name" | "image" | "username">;
-  })[];
-  likes: { userId: string; user: Pick<User, "clerkId"> }[];
-  _count: {
-    likes: number;
-    comments: number;
-  };
-};
+import { PostWithRelations } from "@/types/post.types";
+import LikeButton from "./post/LikeButton";
 
 export default function PostCard({ post }: { post: PostWithRelations }) {
   const queryClient = useQueryClient();
@@ -53,17 +47,6 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     onSuccess: () => {
       setNewComment("");
       setShowComments(true);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // toggle like
-  const toggleLikeMutation = useMutation({
-    mutationFn: toggleLike,
-    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
@@ -130,25 +113,15 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
         <div className="w-full flex flex-col gap-4">
           <div className="flex items-center w-full gap-4">
             {/* Like Button */}
-            <Button
-              disabled={toggleLikeMutation.isPending}
-              onClick={async () => {
-                await toggleLikeMutation.mutate({
-                  postId: post.id,
-                });
+            <LikeButton
+              postId={post.id}
+              initialState={{
+                likes: post._count.likes,
+                isLikedByUser: post.likes.some(
+                  (like) => like.user.clerkId === user.user?.id
+                ),
               }}
-              variant="outline"
-              className={
-                post.likes.some((like) => like.user.clerkId === user.user?.id)
-                  ? "text-red-500 hover:text-red-600"
-                  : "hover:text-red-500"
-              }
-            >
-              <Heart size={20} className="fill-current" />
-              <span className="dark:text-white text-black">
-                {post._count.likes}
-              </span>
-            </Button>
+            />
 
             {/* Comment Button */}
             <Button

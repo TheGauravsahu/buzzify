@@ -127,6 +127,7 @@ export default function Profile({ username }: { username: string }) {
                 )}
               </div>
             </div>
+            
           </div>
         </div>
       </CardContent>

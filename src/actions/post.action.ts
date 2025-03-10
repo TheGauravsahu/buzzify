@@ -228,16 +228,18 @@ export async function toggleLike({ postId }: { postId: string }) {
       });
     } else {
       // like
-      await db.like.create({
+      const like = await db.like.create({
         data: {
           userId,
           postId,
         },
       });
+
+      return like
     }
 
     revalidatePath("/");
-    return { success: true };
+    
   } catch (error) {
     console.error("Failed to toggle like:", error);
     return { success: false, error: "Failed to toggle like" };
