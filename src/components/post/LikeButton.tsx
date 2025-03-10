@@ -33,7 +33,7 @@ export default function LikeButton({ initialState, postId }: LikeButtonProps) {
     staleTime: Infinity,
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: toggleLike,
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });

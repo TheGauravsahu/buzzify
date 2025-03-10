@@ -1,6 +1,7 @@
 "use client";
 import { createComment, getPostById, toggleLike } from "@/actions/post.action";
 import LoadingButton from "@/components/LoadingButton";
+import LikeButton from "@/components/post/LikeButton";
 import SavePost from "@/components/SavePost";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -138,25 +139,15 @@ export default function PostDetails({ postId }: { postId: string }) {
         {/* POST INTERECTIONS */}
         <div className="border-t flex items-center  gap-2 p-2">
           {/* Like Button */}
-          <Button
-            disabled={toggleLikeMutation.isPending}
-            onClick={async () => {
-              await toggleLikeMutation.mutate({
-                postId: post.id,
-              });
+          <LikeButton
+            postId={postId}
+            initialState={{
+              likes: post._count.likes,
+              isLikedByUser: post.likes.some(
+                (like) => like.user.clerkId === user.user?.id
+              ),
             }}
-            variant="outline"
-            className={
-              post.likes.some((like) => like.user.clerkId === user.user?.id)
-                ? "text-red-500 hover:text-red-600"
-                : "hover:text-red-500"
-            }
-          >
-            <Heart size={20} className="fill-current" />
-            <span className="dark:text-white text-black">
-              {post._count.likes}
-            </span>
-          </Button>
+          />
 
           {/* Comment Button */}
           <Button className="flex items-center gap-2" variant="outline">
