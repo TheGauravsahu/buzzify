@@ -3,7 +3,7 @@
 import db from "@/lib/db";
 import { getDbUserId } from "./user.action";
 import { revalidatePath } from "next/cache";
-import { CreatePostData } from "@/components/CreatePost";
+import { CreatePostData } from "@/components/post/CreatePost";
 
 export async function createPost({
   title,

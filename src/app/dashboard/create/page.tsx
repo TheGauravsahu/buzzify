@@ -1,4 +1,4 @@
-import CreatePostForm from "@/components/CreatePost";
+import CreatePostForm from "@/components/post/CreatePost";
 import {
   Card,
   CardContent,

@@ -64,7 +64,7 @@ export default function PostDetails({ postId }: { postId: string }) {
       </div>
 
       {/* RIGHT -> POST INFORMATION */}
-      <div className="border w-full md:w-1/2 h-full">
+      <div className="border w-full md:w-1/2 h-full flex flex-col justify-between">
         {/* Post -> Author(user) */}
         <div className="flex justify-between items-center md:border-b p-2">
           <div className="flex items-center gap-2">
@@ -88,103 +88,110 @@ export default function PostDetails({ postId }: { postId: string }) {
           </div>
         </div>
 
-        {/* Post Info */}
-        <div className="p-4">
-          <h1>{post.title}</h1>
-          <p className="text-sm text-muted-foreground">{post.description}</p>
-        </div>
+          {/* Post Info */}
+          <div className="p-4">
+            <h1>{post.title}</h1>
+            <p className="text-sm text-muted-foreground">{post.description}</p>
+          </div>
 
-        {/* COMMENT LIST/SECTION */}
-        <div className="mt-4 space-y-4 h-[30%] md:h-[55%] overflow-y-auto scrollbar-hide  p-2">
-          {post.comments.length > 0 ? (
-            post.comments.map((comment) => (
-              <div key={comment.id} className="flex items-center gap-4">
-                <Link
-                  prefetch={true}
-                  href={`/profile/${comment.author.username}`}
-                >
-                  <Avatar className="size-8 sm:w-10 sm:h-10">
-                    <AvatarImage src={comment.author.image ?? "/avatar.png"} />
-                  </Avatar>
-                </Link>
-                <div>
+          <div />
+
+          {/* COMMENT LIST/SECTION */}
+          <div className="mt-4 space-y-4 h-[60%] overflow-y-auto scrollbar-hide  p-2">
+            {post.comments.length > 0 ? (
+              post.comments.map((comment) => (
+                <div key={comment.id} className="flex items-center gap-4">
                   <Link
                     prefetch={true}
                     href={`/profile/${comment.author.username}`}
                   >
-                    <h2 className="text-sm text-foreground/80">
-                      {comment.author.name}
-                    </h2>
+                    <Avatar className="size-8 sm:w-10 sm:h-10">
+                      <AvatarImage
+                        src={comment.author.image ?? "/avatar.png"}
+                      />
+                    </Avatar>
                   </Link>
-                  <p>{comment.content}</p>
+                  <div>
+                    <Link
+                      prefetch={true}
+                      href={`/profile/${comment.author.username}`}
+                    >
+                      <h2 className="text-sm text-foreground/80">
+                        {comment.author.name}
+                      </h2>
+                    </Link>
+                    <p>{comment.content}</p>
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p className="p-4 text-muted-foreground">No comments yet.</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p className="p-4 text-muted-foreground">No comments yet.</p>
+            )}
+          </div>
 
-        {/* POST INTERECTIONS */}
-        <div className="border-t flex items-center  gap-2 p-2">
-          {/* Like Button */}
-          <LikeButton
-            postId={postId}
-            initialState={{
-              likes: post._count.likes,
-              isLikedByUser: post.likes.some(
-                (like) => like.user.clerkId === user.user?.id
-              ),
-            }}
-          />
-
-          {/* Comment Button */}
-          <Button className="flex items-center gap-2" variant="outline">
-            <MessageCircle size={20} />
-            {post._count.comments}
-          </Button>
-
-          {/* Save Post */}
-          <SavePost
-            postId={post.id}
-            initialState={{
-              isSavedByUser: post.saved.some(
-                (saved) => saved.user.clerkId === user.user?.id
-              ),
-            }}
-          />
-        </div>
-
-        {/* ADD COMMENT */}
-        <div className="w-full flex gap-2 items-center p-2">
-          <Textarea
-            placeholder="Write a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="min-h-[50px] resize-none"
-          />
-
-          {user.isSignedIn ? (
-            <LoadingButton
-              isPending={commentMutation.isPending}
-              onClick={async () => {
-                await commentMutation.mutate({
-                  postId: post.id,
-                  content: newComment,
-                });
+        <div className="flex flex-col gap-2 p-2 border-t justify-end">
+          {/* POST INTERECTIONS */}
+          <div className=" flex items-center  gap-2">
+            {/* Like Button */}
+            <LikeButton
+              postId={postId}
+              initialState={{
+                likes: post._count.likes,
+                isLikedByUser: post.likes.some(
+                  (like) => like.user.clerkId === user.user?.id
+                ),
               }}
-            >
-              <SendIcon className="size-4" />
-              Comment
-            </LoadingButton>
-          ) : (
-            <SignInButton mode="modal">
-              <Button variant="default" className="cursor-pointer">
-                Sign In
-              </Button>
-            </SignInButton>
-          )}
+            />
+
+            {/* Comment Button */}
+            <Button className="flex items-center gap-2" variant="outline">
+              <MessageCircle size={20} />
+              {post._count.comments}
+            </Button>
+
+            {/* Save Post */}
+            <SavePost
+              postId={post.id}
+              initialState={{
+                isSavedByUser: post.saved.some(
+                  (saved) => saved.user.clerkId === user.user?.id
+                ),
+              }}
+            />
+          </div>
+
+          {/* ADD COMMENT */}
+          <div className="w-full flex gap-2 items-center">
+            <Textarea
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="min-h-[50px] resize-none"
+            />
+
+            {user.isSignedIn ? (
+              <LoadingButton
+                isPending={commentMutation.isPending}
+                onClick={async () => {
+                  await commentMutation.mutate({
+                    postId: post.id,
+                    content: newComment,
+                  });
+                }}
+              >
+                <SendIcon className="size-4" />
+                Comment
+              </LoadingButton>
+            ) : (
+              <SignInButton mode="modal">
+                <Button variant="default" className="cursor-pointer">
+                  Sign In
+                </Button>
+              </SignInButton>
+            )}
+          </div>
         </div>
+
       </div>
     </div>
   );
