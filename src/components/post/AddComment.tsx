@@ -12,7 +12,6 @@ import { Textarea } from "../ui/textarea";
 
 export default function AddComment({ postId }: { postId: string }) {
   const queryClient = useQueryClient();
-  const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const user = useUser();
 
@@ -22,7 +21,6 @@ export default function AddComment({ postId }: { postId: string }) {
     mutationFn: createComment,
     onSuccess: () => {
       setNewComment("");
-      setShowComments(true);
       queryClient.invalidateQueries({ queryKey });
     },
     onError: (error) => {
