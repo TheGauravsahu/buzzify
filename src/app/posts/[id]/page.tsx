@@ -7,7 +7,7 @@ interface PostDetailsPageProps {
 export default async function PostDetailsPage({params}: PostDetailsPageProps) {
     const {id} = await params
   return (
-    <div className='h-screen w-full'>
+    <div className='h-[90vh] w-full'>
         <PostDetails postId={id} />
     </div>
   )

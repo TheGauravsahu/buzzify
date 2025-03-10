@@ -105,7 +105,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         </div>
 
         {/* COMMENT LIST/SECTION */}
-        <div className="mt-4 space-y-4 h-[30%] md:h-[60%] overflow-y-auto scrollbar-hide  p-2">
+        <div className="mt-4 space-y-4 h-[30%] md:h-[55%] overflow-y-auto scrollbar-hide  p-2">
           {post.comments.length > 0 ? (
             post.comments.map((comment) => (
               <div key={comment.id} className="flex items-center gap-4">

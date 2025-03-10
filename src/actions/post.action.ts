@@ -300,10 +300,12 @@ export async function toggleSavePost(postId: string) {
 
 export async function getSavedPostDetails(postId: string) {
   if (!postId) throw Error("Post Id is required.");
+
   return await db.saved.findFirst({
     where: {
       postId,
     },
+
     select: {
       user: {
         select: {
@@ -311,6 +313,7 @@ export async function getSavedPostDetails(postId: string) {
           clerkId: true,
         },
       },
+
       post: {
         select: {
           id: true,
