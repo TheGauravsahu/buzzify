@@ -30,7 +30,6 @@ export default function Profile({ username }: { username: string }) {
 
   if (error) return <div>An error occured.</div>;
 
-  if (!user) return notFound();
 
   // skeleton
   if (isPending) return <ProfileSkeleton />;
