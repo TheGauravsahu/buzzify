@@ -5,9 +5,11 @@ import { Button } from "./ui/button";
 import { BellIcon, HomeIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { SignInButton, UserButton } from "@clerk/nextjs";
+import { getUserByClerkId } from "@/actions/user.action";
 
 export default async function DesktopNavbar() {
-  const user = await currentUser();
+  const session = await currentUser();
+  const user = await getUserByClerkId(session?.id!);
 
   return (
     <div className="hidden md:flex items-center space-x-4">
@@ -20,7 +22,7 @@ export default async function DesktopNavbar() {
         </Link>
       </Button>
 
-      {user ? (
+      {session ? (
         <>
           <Button variant="ghost" className="flex items-center gap-2" asChild>
             <Link prefetch={true} href="/notifications">
@@ -29,13 +31,7 @@ export default async function DesktopNavbar() {
             </Link>
           </Button>
           <Button variant="ghost" className="flex items-center gap-2" asChild>
-            <Link
-              prefetch={true}
-              href={`/profile/${
-                user.username ??
-                user.emailAddresses[0].emailAddress.split("@")[0]
-              }`}
-            >
+            <Link prefetch={true} href={`/profile/${user?.username}`}>
               <UserIcon className="w-4 h-4" />
               <span className="hidden lg:inline">Profile</span>
             </Link>
