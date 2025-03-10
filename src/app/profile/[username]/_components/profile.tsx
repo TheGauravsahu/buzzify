@@ -29,14 +29,13 @@ export default function Profile({ username }: { username: string }) {
 
   if (error) return <div>An error occured.</div>;
 
-
   // skeleton
   if (isPending) return <ProfileSkeleton />;
 
   return (
     <Card className="w-full">
       <CardContent>
-        <div className="flex md:gap-16 gap-4 md:items-center justify-center">
+        <div className="flex flex-col md:flex-row md:gap-16 gap-4 md:items-center justify-center">
           <div className="flex md:gap-16 gap-8 items-start md:items-center">
             <Avatar className="md:w-28 md:h-28 h-20 w-20">
               <AvatarImage src={user?.image ?? "/avatar.png"} />
@@ -100,34 +99,34 @@ export default function Profile({ username }: { username: string }) {
                 <h1>{user?.name}</h1>
                 <p className="text-sm">{user?.bio}</p>
               </div>
-            </div>
-          </div>
 
-          {/* LOCATION & WEBSITE */}
-          <div className="w-full mt-6 space-y-2 text-sm">
-            {user?.location && (
-              <div className="flex items-center text-muted-foreground">
-                <MapPinIcon className="size-4 mr-2" />
-                {user?.location}
+              {/* LOCATION & WEBSITE */}
+              <div className="w-full mt-6 space-y-2 text-sm">
+                {user?.location && (
+                  <div className="flex items-center text-muted-foreground">
+                    <MapPinIcon className="size-4 mr-2" />
+                    {user?.location}
+                  </div>
+                )}
+                {user?.website && (
+                  <div className="flex items-center text-muted-foreground">
+                    <LinkIcon className="size-4 mr-2" />
+                    <a
+                      href={
+                        user?.website.startsWith("http")
+                          ? user?.website
+                          : `https://${user?.website}`
+                      }
+                      className="hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {user.website}
+                    </a>
+                  </div>
+                )}
               </div>
-            )}
-            {user?.website && (
-              <div className="flex items-center text-muted-foreground">
-                <LinkIcon className="size-4 mr-2" />
-                <a
-                  href={
-                    user?.website.startsWith("http")
-                      ? user?.website
-                      : `https://${user?.website}`
-                  }
-                  className="hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {user.website}
-                </a>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </CardContent>
