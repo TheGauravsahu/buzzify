@@ -42,6 +42,17 @@ export async function getUserByClerkId(clerkId: string) {
   });
 }
 
+export async function getUserIdByUsername(username: string) {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  if (!user) throw new Error("User not found");
+  
+  return user.id;
+}
 export async function getDbUserId() {
   const { userId: clerkId } = await auth();
   if (!clerkId) return null;

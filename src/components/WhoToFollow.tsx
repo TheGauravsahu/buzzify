@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import FollowButton from "./FollowButton";
 import { Skeleton } from "./ui/skeleton";
+import { useUser } from "@clerk/nextjs";
 
 export default function WhoToFollow() {
   const {
@@ -16,6 +17,8 @@ export default function WhoToFollow() {
     queryKey: ["usersToFollow"],
     queryFn: getRandomUsers,
   });
+
+  const session = useUser();
 
   if (isPending)
     return (
@@ -48,36 +51,40 @@ export default function WhoToFollow() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {users.map((user) => (
-            <div key={user.id} className="flex">
-              <div className="flex gap-2 items-center justify-between w-full">
-                <div className="flex gap-2 items-center justify-between">
-                  <Link href={`/profile/${user.username}`}>
-                    <Avatar>
-                      <AvatarImage src={user.image ?? "/avatar.png"} />
-                    </Avatar>
-                  </Link>
-
-                  <div className="text-sm">
-                    <Link
-                      href={`/profile/${user.username}`}
-                      className="font-medium cursor-pointer"
-                    >
-                      {user.name}
+          {session.user ? (
+            users.map((user) => (
+              <div key={user.id} className="flex">
+                <div className="flex gap-2 items-center justify-between w-full">
+                  <div className="flex gap-2 items-center justify-between">
+                    <Link href={`/profile/${user.username}`}>
+                      <Avatar>
+                        <AvatarImage src={user.image ?? "/avatar.png"} />
+                      </Avatar>
                     </Link>
-                    <p className="text-muted-foreground">@{user.username}</p>
+
+                    <div className="text-sm">
+                      <Link
+                        href={`/profile/${user.username}`}
+                        className="font-medium cursor-pointer"
+                      >
+                        {user.name}
+                      </Link>
+                      <p className="text-muted-foreground">@{user.username}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-muted-foreground text-xs mb-2">
+                      {user._count.followers} followers
+                    </p>
+                    <FollowButton targetUserId={user.id} />
                   </div>
                 </div>
-
-                <div>
-                  <p className="text-muted-foreground text-xs mb-2">
-                    {user._count.followers} followers
-                  </p>
-                  <FollowButton targetUserId={user.id} />
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <span>Login to to follow.</span>
+          )}
         </div>
       </CardContent>
     </Card>

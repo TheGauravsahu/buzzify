@@ -1,6 +1,7 @@
 "use client";
 import { createComment, getPostById, toggleLike } from "@/actions/post.action";
 import LoadingButton from "@/components/LoadingButton";
+import SavePost from "@/components/SavePost";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -161,6 +162,9 @@ export default function PostDetails({ postId }: { postId: string }) {
             <MessageCircle size={20} />
             {post._count.comments}
           </Button>
+
+          {/* Save Post */}
+          <SavePost postId={post.id} />
         </div>
 
         {/* ADD COMMENT */}

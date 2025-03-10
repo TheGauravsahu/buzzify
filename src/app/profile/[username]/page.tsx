@@ -5,6 +5,8 @@ import ProfilePosts from "./_components/posts";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Grid, Bookmark } from "lucide-react";
+import SavedPosts from "./_components/saved-posts";
+import { getUserIdByUsername } from "@/actions/user.action";
 
 export async function generateMetadata({
   params,
@@ -27,6 +29,7 @@ interface ProfilePageProps {
 }
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
+  const userId = await getUserIdByUsername(username)
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -48,7 +51,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           <TabsContent value="posts">
             <ProfilePosts username={username} />
           </TabsContent>
-          <TabsContent value="saved">Change your password here.</TabsContent>
+          <TabsContent value="saved">
+            <SavedPosts userId={userId} />
+          </TabsContent>
         </Tabs>
       </div>
     </div>

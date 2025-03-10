@@ -274,8 +274,108 @@ export async function createComment({
   return { success: true, comment };
 }
 
+export async function toggleSavePost(postId: string) {
+  const userId = await getDbUserId();
+  if (!userId) throw new Error("Login to save this post.");
+
+  const saved = await db.saved.findFirst({
+    where: { userId, postId },
+  });
+
+  if (saved) {
+    await db.saved.delete({
+      where: {
+        id: saved.id,
+      },
+    });
+  } else {
+    await db.saved.create({
+      data: {
+        postId,
+        userId,
+      },
+    });
+  }
+}
+
+export async function getSavedPostDetails(postId: string) {
+  if (!postId) throw Error("Post Id is required.");
+  return await db.saved.findFirst({
+    where: {
+      postId,
+    },
+    select: {
+      user: {
+        select: {
+          id: true,
+          clerkId: true,
+        },
+      },
+      post: {
+        select: {
+          id: true,
+          image: true,
+          author: {
+            select: {
+              id: true,
+              image: true,
+              clerkId: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getUserSavedPosts({
+  pageParam = 0,
+  userId,
+}: {
+  pageParam: number;
+  userId: string;
+}) {
+  if (!userId) return { posts: [], nextPage: null };
+
+  const pageSize = 3;
+
+  const saved = await db.saved.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: pageSize,
+    skip: pageParam * pageSize,
+    select: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+          image: true,
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const posts = saved.flatMap((post) => post.post);
+
+  return {
+    posts,
+    nextPage: posts.length === pageSize ? pageParam + 1 : null,
+  };
+}
+
 export async function deletePost(postId: string) {
   const userId = await getDbUserId();
+  if (!userId) throw new Error("Login to delete this post.");
 
   const post = await db.post.findUnique({
     where: { id: postId },

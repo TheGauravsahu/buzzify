@@ -15,6 +15,7 @@ import { Heart, MessageCircle, SendIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import LoadingButton from "./LoadingButton";
 import { SignInButton, useUser } from "@clerk/nextjs";
+import SavePost from "./SavePost";
 
 type PostWithRelations = Post & {
   author: Pick<User, "id" | "name" | "image" | "username" | "clerkId">;
@@ -52,7 +53,7 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
     onSuccess: () => {
       setNewComment("");
       setShowComments(true);
-      queryClient.invalidateQueries({ queryKey: ["posts", post.id] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -158,6 +159,9 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
               <MessageCircle size={20} />
               {post._count.comments}
             </Button>
+
+            {/* Save Post */}
+            <SavePost postId={post.id} />
           </div>
 
           {/* COMMENT LIST/SECTION */}
