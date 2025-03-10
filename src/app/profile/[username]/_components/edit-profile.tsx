@@ -165,6 +165,7 @@ export default function EditProfileDialog({
           <LoadingButton
             isPending={mutation.isPending}
             onClick={async () => {
+              if (!userData) toast.error("All fields are required.");
               await mutation.mutate(userData);
             }}
           >
