@@ -73,6 +73,17 @@ export async function getPosts({ pageParam = 0 }) {
           },
         },
       },
+      // saved -> post
+      saved: {
+        select: {
+          userId: true,
+          user: {
+            select: {
+              clerkId: true,
+            },
+          },
+        },
+      },
       _count: {
         select: {
           likes: true,
@@ -117,6 +128,17 @@ export const getPostById = async (postId: string) => {
       },
       // post -> likes
       likes: {
+        select: {
+          userId: true,
+          user: {
+            select: {
+              clerkId: true,
+            },
+          },
+        },
+      },
+      // saved -> post
+      saved: {
         select: {
           userId: true,
           user: {
@@ -199,53 +221,6 @@ export async function getCurrentUserPosts() {
   }
 }
 
-export async function toggleLike({ postId }: { postId: string }) {
-  try {
-    const userId = await getDbUserId();
-    if (!userId) return;
-
-    // if like exists
-    const existingLike = await db.like.findFirst({
-      where: {
-        userId,
-        postId,
-      },
-    });
-
-    const post = await db.post.findUnique({
-      where: { id: postId },
-      select: { authorId: true },
-    });
-
-    if (!post) throw new Error("Post not found.");
-
-    if (existingLike) {
-      // unlike
-      await db.like.delete({
-        where: {
-          id: existingLike.id,
-        },
-      });
-    } else {
-      // like
-      const like = await db.like.create({
-        data: {
-          userId,
-          postId,
-        },
-      });
-
-      return like
-    }
-
-    revalidatePath("/");
-    
-  } catch (error) {
-    console.error("Failed to toggle like:", error);
-    return { success: false, error: "Failed to toggle like" };
-  }
-}
-
 export async function createComment({
   postId,
   content,
@@ -274,58 +249,6 @@ export async function createComment({
   });
 
   return { success: true, comment };
-}
-
-export async function toggleSavePost(postId: string) {
-  const userId = await getDbUserId();
-  if (!userId) throw new Error("Login to save this post.");
-
-  const saved = await db.saved.findFirst({
-    where: { userId, postId },
-  });
-
-  if (saved) {
-    await db.saved.delete({
-      where: {
-        id: saved.id,
-      },
-    });
-  } else {
-    await db.saved.create({
-      data: {
-        postId,
-        userId,
-      },
-    });
-  }
-}
-
-export async function getSavedPostDetails(postId: string) {
-  if (!postId) throw Error("Post Id is required.");
-
-  return await db.saved.findFirst({
-    where: {
-      postId,
-    },
-    select: {
-      user: {
-        select: {
-          id: true,
-          clerkId: true,
-        },
-      },
-      post: {
-        select: {
-          id: true,
-          author: {
-            select: {
-              id: true,
-            },
-          },
-        },
-      },
-    },
-  });
 }
 
 export async function getUserSavedPosts({

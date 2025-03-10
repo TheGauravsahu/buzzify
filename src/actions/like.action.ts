@@ -31,14 +31,12 @@ export async function toggleLike({ postId }: { postId: string }) {
     });
   } else {
     // like
-    const like = await db.like.create({
+    await db.like.create({
       data: {
         userId,
         postId,
       },
     });
-
-    return like;
   }
 }
 

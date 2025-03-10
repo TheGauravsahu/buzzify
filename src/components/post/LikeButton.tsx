@@ -1,7 +1,6 @@
 "use client";
 
-import { getPostLikes } from "@/actions/like.action";
-import { toggleLike } from "@/actions/post.action";
+import { getPostLikes, toggleLike } from "@/actions/like.action";
 import {
   QueryKey,
   useMutation,
@@ -49,6 +48,7 @@ export default function LikeButton({ initialState, postId }: LikeButtonProps) {
       return { previousState };
     },
     onError: (error, _, context) => {
+      console.log(error)
       queryClient.setQueryData(queryKey, context?.previousState);
       toast.error(error.message);
     },

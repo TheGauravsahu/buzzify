@@ -3,23 +3,18 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
-import {
-  InfiniteData,
-  QueryFilters,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { createComment, deletePost, toggleLike } from "@/actions/post.action";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createComment, deletePost } from "@/actions/post.action";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { formatDate } from "@/lib/utils";
-import { Heart, MessageCircle, SendIcon } from "lucide-react";
+import { MessageCircle, SendIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import LoadingButton from "./LoadingButton";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import SavePost from "./SavePost";
+import SavePost from "./post/SavePost";
 import { PostWithRelations } from "@/types/post.types";
 import LikeButton from "./post/LikeButton";
 
@@ -134,7 +129,15 @@ export default function PostCard({ post }: { post: PostWithRelations }) {
             </Button>
 
             {/* Save Post */}
-            <SavePost postId={post.id} />
+            {/* Save Post */}
+            <SavePost
+              postId={post.id}
+              initialState={{
+                isSavedByUser: post.saved.some(
+                  (saved) => saved.user.clerkId === user.user?.id
+                ),
+              }}
+            />
           </div>
 
           {/* COMMENT LIST/SECTION */}

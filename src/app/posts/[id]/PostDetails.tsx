@@ -1,8 +1,8 @@
 "use client";
-import { createComment, getPostById, toggleLike } from "@/actions/post.action";
+import { createComment, getPostById } from "@/actions/post.action";
 import LoadingButton from "@/components/LoadingButton";
 import LikeButton from "@/components/post/LikeButton";
-import SavePost from "@/components/SavePost";
+import SavePost from "@/components/post/SavePost";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/lib/utils";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Heart, MessageCircle, SendIcon } from "lucide-react";
+import { MessageCircle, SendIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -28,17 +28,6 @@ export default function PostDetails({ postId }: { postId: string }) {
     onSuccess: () => {
       setNewComment("");
       queryClient.invalidateQueries();
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // toggle like
-  const toggleLikeMutation = useMutation({
-    mutationFn: toggleLike,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -156,7 +145,14 @@ export default function PostDetails({ postId }: { postId: string }) {
           </Button>
 
           {/* Save Post */}
-          <SavePost postId={post.id} />
+          <SavePost
+            postId={post.id}
+            initialState={{
+              isSavedByUser: post.saved.some(
+                (saved) => saved.user.clerkId === user.user?.id
+              ),
+            }}
+          />
         </div>
 
         {/* ADD COMMENT */}
