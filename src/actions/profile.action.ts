@@ -136,6 +136,10 @@ export async function editProfile({
   const userId = await getDbUserId();
   if (!userId) throw new Error("Login to edit your profile.");
 
+  if (!name || !username || !bio || !website || !location) {
+    throw new Error("All fields are required.");
+  }
+
   const user = await db.user.update({
     where: {
       id: userId,
