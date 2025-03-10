@@ -49,9 +49,7 @@ export async function getUserIdByUsername(username: string) {
     },
   });
 
-  if (!user) throw new Error("User not found");
-  
-  return user.id;
+  return user?.id;
 }
 export async function getDbUserId() {
   const { userId: clerkId } = await auth();

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Grid, Bookmark } from "lucide-react";
 import SavedPosts from "./_components/saved-posts";
 import { getUserIdByUsername } from "@/actions/user.action";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -16,7 +17,7 @@ export async function generateMetadata({
   const { username } = await params;
 
   const user = await getProfileByUsername(username);
-  if (!user) return;
+  if (!user) return notFound();
 
   return {
     title: `${user.name ?? user.username} - Buzzify`,
@@ -29,7 +30,9 @@ interface ProfilePageProps {
 }
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
-  const userId = await getUserIdByUsername(username)
+  const userId = await getUserIdByUsername(username);
+  if (!userId) return notFound();
+
 
   return (
     <div className="max-w-4xl mx-auto">
