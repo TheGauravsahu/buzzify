@@ -7,13 +7,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import React from "react";
 import { Skeleton } from "./ui/skeleton";
-import { getProfileFollowingsById } from "@/actions/profile.action";
+import { getProfileFollowingsById } from "@/actions/follow.action";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import FollowButton from "./FollowButton";
+import { checkIfFollowing } from "@/actions/follow.action";
 
 export default function FollowingDialog({
   children,
@@ -31,7 +36,18 @@ export default function FollowingDialog({
   } = useQuery({
     queryKey: ["followings", userId],
     queryFn: () => getProfileFollowingsById(userId),
+    enabled: !!userId,
   });
+
+    // Fetch `isFollowing` status for each follower **before rendering**
+    const followStatuses = useQueries({
+      queries:
+        followings?.map((user) => ({
+          queryKey: ["follow-user", user.id],
+          queryFn: () => checkIfFollowing(user.id),
+          enabled: !!user.id,
+        })) || [],
+    });
 
   if (isPending)
     return (
@@ -59,6 +75,8 @@ export default function FollowingDialog({
     queryClient.invalidateQueries({ queryKey: ["followings", userId] });
   };
 
+
+
   return (
     <Dialog>
       <DialogTrigger onClick={handleRefetch}>{children}</DialogTrigger>
@@ -67,41 +85,51 @@ export default function FollowingDialog({
           <DialogTitle>Followings</DialogTitle>
           <DialogDescription>
             <div className="flex flex-col gap-4">
-              {followings?.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex gap-2 items-center justify-between w-full"
-                >
-                  <div className="flex gap-2 items-center justify-between">
-                    <Link
-                      prefetch={true}
-                      href={`/profile/${user.following.username}`}
-                    >
-                      <Avatar>
-                        <AvatarImage
-                          src={user.following.image ?? "/avatar.png"}
-                        />
-                      </Avatar>
-                    </Link>
+              {followings?.map((user, index) => {
+                const followStatus = followStatuses[index]?.data;
 
-                    <div className="text-sm flex flex-col items-start">
+                return (
+                  <div
+                    key={user.id}
+                    className="flex gap-2 items-center justify-between w-full"
+                  >
+                    <div className="flex gap-2 items-center justify-between">
                       <Link
+                        prefetch={true}
                         href={`/profile/${user.following.username}`}
-                        className="font-medium cursor-pointer"
                       >
-                        {user.following.name}
+                        <Avatar>
+                          <AvatarImage
+                            src={user.following.image ?? "/avatar.png"}
+                          />
+                        </Avatar>
                       </Link>
-                      <p className="text-muted-foreground">
-                        @{user.following.username}
-                      </p>
+
+                      <div className="text-sm flex flex-col items-start">
+                        <Link
+                          href={`/profile/${user.following.username}`}
+                          className="font-medium cursor-pointer"
+                        >
+                          {user.following.name}
+                        </Link>
+                        <p className="text-muted-foreground">
+                          @{user.following.username}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <FollowButton
+                        targetUserId={user.id}
+                        initialState={{
+                          isFollowed: followStatus?.isFollowed ?? false,
+                        }}
+                        username={user.following.username}
+                      />
                     </div>
                   </div>
-
-                  <div>
-                    <FollowButton targetUserId={user.following.id} />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </DialogDescription>
         </DialogHeader>
