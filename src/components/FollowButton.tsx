@@ -1,43 +1,81 @@
 "use client";
-import { checkIfFollowing, toggleFollow } from "@/actions/user.action";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import LoadingButton from "./LoadingButton";
+import { checkIfFollowing, toggleFollow } from "@/actions/follow.action";
+import {
+  QueryKey,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Skeleton } from "./ui/skeleton";
+import { Button } from "./ui/button";
+import { ProfileWithCounts } from "@/types/profile.types";
+
+interface FollowButtonProps {
+  targetUserId: string;
+  username: string;
+  initialState: InitialState;
+}
+interface InitialState {
+  isFollowed: boolean;
+}
 
 export default function FollowButton({
   targetUserId,
-}: {
-  targetUserId: string;
-}) {
+  initialState,
+  username,
+}: FollowButtonProps) {
   const queryClient = useQueryClient();
+  const queryKey: QueryKey = ["follow-user", targetUserId];
 
-  const mutation = useMutation({
-    mutationKey: ["follow", targetUserId],
-    mutationFn: toggleFollow,
-
-    onSuccess: () => {
-      queryClient.invalidateQueries(); // This will refetch all queries
-    },
-    onError: (error) => {
-      toast.error((error as Error).message);
-    },
+  const { data, isPending } = useQuery({
+    queryKey,
+    queryFn: () => checkIfFollowing(targetUserId),
+    staleTime: Infinity,
+    initialData: initialState,
   });
 
-  const { data: isFollowing, isPending } = useQuery({
-    queryKey: ["followStatus", targetUserId],
-    queryFn: () => checkIfFollowing(targetUserId),
-    staleTime: 60 * 1000, // Cache for 1 min
+  const { mutate } = useMutation({
+    mutationFn: toggleFollow,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousState = queryClient.getQueryData<InitialState>(queryKey);
+
+      queryClient.setQueryData(queryKey, {
+        isFollowed: !previousState?.isFollowed,
+      });
+
+      // update follower count in profile
+      queryClient.setQueryData(
+        ["profile", username],
+        (oldData: ProfileWithCounts) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            _count: {
+              ...oldData._count,
+              followers:
+                oldData._count.followers + (previousState?.isFollowed ? -1 : 1),
+            },
+          };
+        }
+      );
+
+      return { previousState };
+    },
+    onError: (error, _, context) => {
+      queryClient.setQueryData(queryKey, context?.previousState);
+      toast.error(error.message);
+    },
   });
 
   if (isPending) return <Skeleton className="w-16 h-8" />;
 
   return (
-    <LoadingButton
-      isPending={mutation.isPending || isPending}
-      onClick={() => mutation.mutate(targetUserId)}
-    >
-      {isFollowing ? "Unfollow" : "Follow"}
-    </LoadingButton>
+    <Button onClick={() => mutate(targetUserId)}>
+      {data.isFollowed ? "Unfollow" : "Follow"}
+    </Button>
   );
 }

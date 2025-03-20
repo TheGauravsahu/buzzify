@@ -31,7 +31,7 @@ export default function PostsList() {
         <h3 className="text-center text-muted-foreground">No more posts.</h3>
       }
     >
-      <div className="flex flex-1   flex-col gap-8 overflow-hidden w-full h-full   mx-auto">
+      <div className="flex flex-1   flex-col gap-8 overflow-hidden w-full h-full   mx-auto pb-4">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}

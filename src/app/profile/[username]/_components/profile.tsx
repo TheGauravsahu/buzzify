@@ -9,11 +9,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AvatarImage } from "@radix-ui/react-avatar";
-import { useQuery } from "@tanstack/react-query";
+import { QueryKey, useQuery } from "@tanstack/react-query";
 import { LinkIcon, MapPinIcon } from "lucide-react";
 import EditProfileDialog from "./edit-profile";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { checkIfFollowing } from "@/actions/follow.action";
 
 export default function Profile({ username }: { username: string }) {
   const {
@@ -23,6 +24,13 @@ export default function Profile({ username }: { username: string }) {
   } = useQuery({
     queryKey: ["profile", username],
     queryFn: () => getProfileByUsername(username),
+  });
+
+  const queryKey: QueryKey = ["follow-user", user?.id];
+
+  const { data } = useQuery({
+    queryKey,
+    queryFn: () => checkIfFollowing(user?.id as string),
   });
 
   const session = useUser();
@@ -45,7 +53,13 @@ export default function Profile({ username }: { username: string }) {
               <div className="flex md:flex-row flex-col md:items-end gap-4">
                 <h1 className="md:mt-4 text-2xl font-bold">{user?.username}</h1>
                 {session.isSignedIn ? (
-                  <FollowButton targetUserId={user?.id as string} />
+                  <FollowButton
+                    targetUserId={user?.id as string}
+                    initialState={{
+                      isFollowed: data?.isFollowed!,
+                    }}
+                    username={user?.username!}
+                  />
                 ) : (
                   <SignInButton mode="modal">
                     <Button variant="default" className="cursor-pointer">
@@ -127,7 +141,6 @@ export default function Profile({ username }: { username: string }) {
                 )}
               </div>
             </div>
-            
           </div>
         </div>
       </CardContent>

@@ -52,7 +52,8 @@ export default function AddComment({ postId }: { postId: string }) {
       ) : (
         <SignInButton mode="modal">
           <Button variant="default" className="cursor-pointer">
-            Sign In
+            <SendIcon className="size-4" />
+            Comment
           </Button>
         </SignInButton>
       )}
