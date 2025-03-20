@@ -1,12 +1,13 @@
 "use client";
 import { getRandomUsers } from "@/actions/user.action";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import FollowButton from "./FollowButton";
 import { Skeleton } from "./ui/skeleton";
 import { useUser } from "@clerk/nextjs";
+import { checkIfFollowing } from "@/actions/follow.action";
 
 export default function WhoToFollow() {
   const {
@@ -16,6 +17,16 @@ export default function WhoToFollow() {
   } = useQuery({
     queryKey: ["usersToFollow"],
     queryFn: getRandomUsers,
+  });
+
+  // Fetch `isFollowing` status for each follower **before rendering**
+  const followStatuses = useQueries({
+    queries:
+      users?.map((user) => ({
+        queryKey: ["follow-user", user.id],
+        queryFn: () => checkIfFollowing(user.id),
+        enabled: !!user.id,
+      })) || [],
   });
 
   const session = useUser();
@@ -52,36 +63,48 @@ export default function WhoToFollow() {
       <CardContent>
         <div className="space-y-4">
           {session.user ? (
-            users.map((user) => (
-              <div key={user.id} className="flex">
-                <div className="flex gap-2 items-center justify-between w-full">
-                  <div className="flex gap-2 items-center justify-between">
-                    <Link href={`/profile/${user.username}`}>
-                      <Avatar>
-                        <AvatarImage src={user.image ?? "/avatar.png"} />
-                      </Avatar>
-                    </Link>
+            users.map((user, index) => {
+              const followingStatus = followStatuses[index]?.data;
 
-                    <div className="text-sm">
-                      <Link
-                        href={`/profile/${user.username}`}
-                        className="font-medium cursor-pointer"
-                      >
-                        {user.name}
+              return (
+                <div key={user.id} className="flex">
+                  <div className="flex gap-2 items-center justify-between w-full">
+                    <div className="flex gap-2 items-center justify-between">
+                      <Link href={`/profile/${user.username}`}>
+                        <Avatar>
+                          <AvatarImage src={user.image ?? "/avatar.png"} />
+                        </Avatar>
                       </Link>
-                      <p className="text-muted-foreground">@{user.username}</p>
+
+                      <div className="text-sm">
+                        <Link
+                          href={`/profile/${user.username}`}
+                          className="font-medium cursor-pointer"
+                        >
+                          {user.name}
+                        </Link>
+                        <p className="text-muted-foreground">
+                          @{user.username}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-muted-foreground text-xs mb-2">
+                        {user._count.followers} followers
+                      </p>
+                      <FollowButton
+                        targetUserId={user.id}
+                        initialState={{
+                          isFollowed: followingStatus?.isFollowed ?? false,
+                        }}
+                        username={user.username}
+                      />
                     </div>
                   </div>
-
-                  <div>
-                    <p className="text-muted-foreground text-xs mb-2">
-                      {user._count.followers} followers
-                    </p>
-                    <FollowButton targetUserId={user.id} />
-                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <span>Login to to follow.</span>
           )}
