@@ -56,9 +56,9 @@ export default function Profile({ username }: { username: string }) {
                   <FollowButton
                     targetUserId={user?.id as string}
                     initialState={{
-                      isFollowed: data?.isFollowed!,
+                      isFollowed: data?.isFollowed ?? false,
                     }}
-                    username={user?.username!}
+                    username={user?.username as string}
                   />
                 ) : (
                   <SignInButton mode="modal">
