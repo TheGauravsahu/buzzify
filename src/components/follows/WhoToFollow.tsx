@@ -1,11 +1,11 @@
 "use client";
 import { getRandomUsers } from "@/actions/user.action";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import FollowButton from "./FollowButton";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/nextjs";
 import { checkIfFollowing } from "@/actions/follow.action";
 

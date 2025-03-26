@@ -9,7 +9,7 @@ import {
 import { getSavedPostDetails, toggleSavePost } from "@/actions/save.action";
 import { toast } from "sonner";
 import { Bookmark } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface SavePostProps {
   postId: string;

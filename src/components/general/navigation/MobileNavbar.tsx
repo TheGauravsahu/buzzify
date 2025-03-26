@@ -8,8 +8,8 @@ import {
 import { BellIcon, HomeIcon, LogOutIcon, UserIcon } from "lucide-react";
 import { SignInButton, SignOutButton } from "@clerk/nextjs";
 
-import { ModeToggle } from "./ModeToggle";
-import { Button } from "./ui/button";
+import { ModeToggle } from "../ModeToggle";
+import { Button } from "../../ui/button";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 import { currentUser } from "@clerk/nextjs/server";

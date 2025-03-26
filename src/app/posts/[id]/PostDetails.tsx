@@ -1,9 +1,9 @@
 "use client";
 import { getPostById } from "@/actions/post.action";
-import AddComment from "@/components/post/AddComment";
-import CommentList from "@/components/post/CommentList";
-import LikeButton from "@/components/post/LikeButton";
-import SavePost from "@/components/post/SavePost";
+import AddComment from "@/components/post/interections/comment/AddComment";
+import CommentList from "@/components/post/interections/comment/CommentList";
+import LikeButton from "@/components/post/interections/like/LikeButton";
+import SavePost from "@/components/post/interections/save/SavePost";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

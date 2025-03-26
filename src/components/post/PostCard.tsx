@@ -2,22 +2,22 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePost } from "@/actions/post.action";
 import { toast } from "sonner";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { formatDate } from "@/lib/utils";
 import { MessageCircle } from "lucide-react";
-import LoadingButton from "./LoadingButton";
+import LoadingButton from "../general/LoadingButton";
 import { useUser } from "@clerk/nextjs";
-import SavePost from "./post/SavePost";
+import SavePost from "./interections/save/SavePost";
 import { PostWithRelations } from "@/types/post.types";
-import LikeButton from "./post/LikeButton";
-import CommentList from "./post/CommentList";
-import AddComment from "./post/AddComment";
+import LikeButton from "./interections/like/LikeButton";
+import CommentList from "./interections/comment/CommentList";
+import AddComment from "./interections/comment/AddComment";
 
 export default function PostCard({ post }: { post: PostWithRelations }) {
   const queryClient = useQueryClient();

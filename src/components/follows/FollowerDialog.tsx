@@ -13,10 +13,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getProfileFollowersById } from "@/actions/profile.action";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import FollowButton from "./FollowButton";
 import { checkIfFollowing } from "@/actions/follow.action";
 

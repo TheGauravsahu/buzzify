@@ -1,19 +1,13 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "@/actions/post.action";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "./PostCard";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import useInfinitePost from "@/hooks/use-infinite-post";
 
 export default function PostsList() {
-  const { data, fetchNextPage, hasNextPage, status } = useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: ({ pageParam = 0 }) => getPosts({ pageParam }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
+  const { data, fetchNextPage, hasNextPage, status } = useInfinitePost();
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
 

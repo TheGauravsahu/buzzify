@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { SignInButton, useUser } from "@clerk/nextjs";
 
 interface LikeButtonProps {

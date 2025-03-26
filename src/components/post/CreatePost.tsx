@@ -15,10 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { createPost } from "@/actions/post.action";
-import LoadingButton from "../LoadingButton";
+import LoadingButton from "../general/LoadingButton";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import ImageUploader from "../general/ImageUploader";
+import { useState } from "react";
 
 export const createPostSchema = z.object({
   description: z.string().min(1, "Description is required."),
@@ -29,6 +31,8 @@ export const createPostSchema = z.object({
 export type CreatePostData = z.infer<typeof createPostSchema>;
 
 export default function CreatePostForm() {
+  const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
+
   const form = useForm<CreatePostData>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
@@ -38,13 +42,19 @@ export default function CreatePostForm() {
     },
   });
 
-  const router = useRouter();
+  const onUploadSuccess = (url: string) => {
+    setIsImageUploading(true);
+    form.setValue("image", url);
+    setIsImageUploading(false);
+  };
 
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
+      setIsImageUploading(false);
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
@@ -93,11 +103,11 @@ export default function CreatePostForm() {
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({}) => (
             <FormItem>
               <FormLabel>Image</FormLabel>
               <FormControl>
-                <Input placeholder="Enter post image url." {...field} />
+                <ImageUploader onUploadSuccess={onUploadSuccess} />
               </FormControl>
 
               <FormMessage />
@@ -105,7 +115,9 @@ export default function CreatePostForm() {
           )}
         />
 
-        <LoadingButton isPending={form.formState.isSubmitting}>
+        <LoadingButton
+          isPending={form.formState.isSubmitting || isImageUploading}
+        >
           Add
         </LoadingButton>
       </form>

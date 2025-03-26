@@ -7,8 +7,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Skeleton } from "./ui/skeleton";
-import { Button } from "./ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { ProfileWithCounts } from "@/types/profile.types";
 
 interface FollowButtonProps {
@@ -67,6 +67,20 @@ export default function FollowButton({
     },
     onError: (error, _, context) => {
       queryClient.setQueryData(queryKey, context?.previousState);
+      queryClient.setQueryData(
+        ["profile", username],
+        (oldData: ProfileWithCounts) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            _count: {
+              ...oldData._count,
+              followers: oldData._count.followers - 1,
+            },
+          };
+        }
+      );
       toast.error(error.message);
     },
   });

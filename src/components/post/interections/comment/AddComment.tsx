@@ -4,11 +4,11 @@ import { createComment } from "@/actions/post.action";
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
-import LoadingButton from "../LoadingButton";
+import { Button } from "@/components/ui/button";
+import LoadingButton from "@/components/general/LoadingButton";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { SendIcon } from "lucide-react";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function AddComment({ postId }: { postId: string }) {
   const queryClient = useQueryClient();

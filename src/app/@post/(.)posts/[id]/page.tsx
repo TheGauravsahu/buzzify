@@ -1,5 +1,5 @@
 import PostDetails from "@/app/posts/[id]/PostDetails";
-import CloseButton from "@/components/CloseButton";
+import CloseButton from "@/components/general/navigation/CloseButton";
 import React from "react";
 
 export default async function PostModel({

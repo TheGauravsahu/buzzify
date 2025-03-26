@@ -7,16 +7,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getProfileFollowingsById } from "@/actions/follow.action";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import FollowButton from "./FollowButton";
 import { checkIfFollowing } from "@/actions/follow.action";
 
@@ -39,15 +35,15 @@ export default function FollowingDialog({
     enabled: !!userId,
   });
 
-    // Fetch `isFollowing` status for each follower **before rendering**
-    const followStatuses = useQueries({
-      queries:
-        followings?.map((user) => ({
-          queryKey: ["follow-user", user.id],
-          queryFn: () => checkIfFollowing(user.id),
-          enabled: !!user.id,
-        })) || [],
-    });
+  // Fetch `isFollowing` status for each follower **before rendering**
+  const followStatuses = useQueries({
+    queries:
+      followings?.map((user) => ({
+        queryKey: ["follow-user", user.id],
+        queryFn: () => checkIfFollowing(user.id),
+        enabled: !!user.id,
+      })) || [],
+  });
 
   if (isPending)
     return (
@@ -74,8 +70,6 @@ export default function FollowingDialog({
   const handleRefetch = () => {
     queryClient.invalidateQueries({ queryKey: ["followings", userId] });
   };
-
-
 
   return (
     <Dialog>

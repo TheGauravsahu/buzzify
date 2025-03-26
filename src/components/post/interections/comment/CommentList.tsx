@@ -2,7 +2,7 @@
 
 import { QueryKey, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getPostsComments } from "@/actions/comment.action";
 import { User, Comment } from "@prisma/client";
 

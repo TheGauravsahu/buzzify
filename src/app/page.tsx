@@ -1,6 +1,6 @@
-import PostsList from "@/components/PostsList";
+import PostsList from "@/components/post/PostsList";
 import { buttonVariants } from "@/components/ui/button";
-import WhoToFollow from "@/components/WhoToFollow";
+import WhoToFollow from "@/components/follows/WhoToFollow";
 import Link from "next/link";
 
 export default function Home() {

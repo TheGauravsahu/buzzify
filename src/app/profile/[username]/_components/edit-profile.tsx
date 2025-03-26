@@ -21,7 +21,7 @@ import {
 } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import LoadingButton from "@/components/LoadingButton";
+import LoadingButton from "@/components/general/LoadingButton";
 import { useRouter } from "next/navigation";
 
 interface EditProfileDialogProps {
